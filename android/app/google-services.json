@@ -1,0 +1,91 @@
+{
+  "project_info": {
+    "project_number": "1097752162095",
+    "firebase_url": "https://info-do-transporte-publico.firebaseio.com",
+    "project_id": "info-do-transporte-publico",
+    "storage_bucket": "info-do-transporte-publico.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1097752162095:android:a07c96019fdf02f9",
+        "android_client_info": {
+          "package_name": "br.com.itp.admin_itp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1097752162095-geldaiplgc64h7mlhiabs68gl0fq2d7d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDN0MlD6Pd1-PW9mTx3ubYQU8OlxY7GIhM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1097752162095-geldaiplgc64h7mlhiabs68gl0fq2d7d.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1097752162095-h3kah5nohgcmfkeiv5qe1gco89fag06h.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.siliosffreitas.itp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1097752162095:android:9a944e00a315c7b7",
+        "android_client_info": {
+          "package_name": "com.siliosffreitas.itp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1097752162095-ku5tf0e86gcfckutf125hhngjjg2cgkq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.siliosffreitas.itp",
+            "certificate_hash": "1405f9c1cd5086e53947aa7383dc3dd203ceb9f8"
+          }
+        },
+        {
+          "client_id": "1097752162095-geldaiplgc64h7mlhiabs68gl0fq2d7d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDN0MlD6Pd1-PW9mTx3ubYQU8OlxY7GIhM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1097752162095-geldaiplgc64h7mlhiabs68gl0fq2d7d.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1097752162095-h3kah5nohgcmfkeiv5qe1gco89fag06h.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.siliosffreitas.itp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
