@@ -127,9 +127,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   builder: (context) => LinhasScreen()));
                             },
                           ),
-                          
+
                           ListTile(
-                            leading: Icon(Icons.directions_bus),
+                            leading: Icon(Icons.access_alarms),
                             title: Text("Horários"),
                             onTap: () {
                               Navigator.of(context).pop();
