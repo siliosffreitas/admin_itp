@@ -44,7 +44,10 @@ class _MyHomePageState extends State<MyHomePage> {
               RaisedButton(
                 child: Text("Montar linhas"),
                 onPressed: null//_montarLinhas,
-
+              ),
+              RaisedButton(
+                  child: Text("Montar paradas"),
+                  onPressed: null//_montarParadas,
               )
             ],
           ),
@@ -61,6 +64,21 @@ class _MyHomePageState extends State<MyHomePage> {
         Firestore.instance.collection("linhas").add(map).then((doc) {
 //        cartProduct.cid = doc.documentID;
           print(map['CodigoLinha']);
+        });
+      });
+    }catch(e){
+      print(e);
+    }
+  }
+
+  _montarParadas() {
+
+    List<Map<String, dynamic>> _paradas = paradas;
+    try {
+      _paradas.forEach((map) {
+        Firestore.instance.collection("paradas").add(map).then((doc) {
+//        cartProduct.cid = doc.documentID;
+          print(map['CodigoParada']);
         });
       });
     }catch(e){

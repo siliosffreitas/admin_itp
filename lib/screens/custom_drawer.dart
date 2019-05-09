@@ -1,3 +1,4 @@
+import 'package:admin_itp/screens/paradas_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'administradores_screen.dart';
@@ -112,8 +113,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             title: Text("Paradas"),
                             onTap: () {
                               Navigator.of(context).pop();
-//                              Navigator.of(context).push(MaterialPageRoute(
-//                                  builder: (context) => ProdutosScreen()));
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => ParadasScreen()));
                             },
                           ),
                           ListTile(
@@ -122,7 +123,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             onTap: () {
                               Navigator.of(context).pop();
                               Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => ClientesScreen()));
+                                  builder: (context) => LinhasScreen()));
                             },
                           ),
 

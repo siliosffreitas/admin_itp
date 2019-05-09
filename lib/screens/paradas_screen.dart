@@ -1,15 +1,16 @@
 
 import 'package:admin_itp/screens/primeiramente_cadastr_para_ver.dart';
 import 'package:admin_itp/tiles/linha_tile.dart';
+import 'package:admin_itp/tiles/parada_tile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class LinhasScreen extends StatefulWidget {
+class ParadasScreen extends StatefulWidget {
   @override
-  _LinhasScreenState createState() => _LinhasScreenState();
+  _ParadasScreenState createState() => _ParadasScreenState();
 }
 
-class _LinhasScreenState extends State<LinhasScreen> {
+class _ParadasScreenState extends State<ParadasScreen> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 //  String _query;
@@ -35,7 +36,7 @@ class _LinhasScreenState extends State<LinhasScreen> {
 //                child: Text(_query),
 //              )
 //            :
-        Text("Linhas"),
+        Text("Paradas"),
         actions: <Widget>[
 //          IconButton(
 //            icon: Icon(Icons.search),
@@ -46,8 +47,8 @@ class _LinhasScreenState extends State<LinhasScreen> {
       ),
       body: StreamBuilder<QuerySnapshot>(
           stream: Firestore.instance
-              .collection('linhas')
-              .orderBy('CodigoLinha', descending: false)
+              .collection('paradas')
+              .orderBy('CodigoParada', descending: false)
               .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
@@ -72,7 +73,7 @@ class _LinhasScreenState extends State<LinhasScreen> {
                   snapshot.data.documents.isEmpty) {
                 return PrimeiramenteCadastreParaVer();
               }
-              return _createListLinhas(snapshot.data.documents);
+              return _createListParadas(snapshot.data.documents);
             }
           }),
 //      floatingActionButton: FloatingActionButton(
@@ -86,11 +87,11 @@ class _LinhasScreenState extends State<LinhasScreen> {
     );
   }
 
-  _createListLinhas(Iterable<DocumentSnapshot> documents) {
+  _createListParadas(Iterable<DocumentSnapshot> documents) {
     return ListView.separated(
       itemCount: documents.length,
       itemBuilder: (content, index) {
-        return LinhaTile(documents.elementAt(index));
+        return ParadaTile(documents.elementAt(index));
       },
       separatorBuilder: (context, index) => Divider(
             indent: 16,
