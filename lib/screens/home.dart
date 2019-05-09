@@ -42,12 +42,15 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             children: <Widget>[
               RaisedButton(
-                child: Text("Montar linhas"),
-                onPressed: null//_montarLinhas,
-              ),
+                  child: Text("Montar linhas"), onPressed: null //_montarLinhas,
+                  ),
               RaisedButton(
                   child: Text("Montar paradas"),
-                  onPressed: null//_montarParadas,
+                  onPressed: null //_montarParadas,
+                  ),
+              RaisedButton(
+                  child: Text("Montar horários"),
+                  onPressed: null//_montarHorarios,
               )
             ],
           ),
@@ -57,7 +60,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _montarLinhas() {
-
     List<Map<String, dynamic>> _linhas = linhas;
     try {
       _linhas.forEach((map) {
@@ -66,23 +68,33 @@ class _MyHomePageState extends State<MyHomePage> {
           print(map['CodigoLinha']);
         });
       });
-    }catch(e){
+    } catch (e) {
       print(e);
     }
   }
 
   _montarParadas() {
-
     List<Map<String, dynamic>> _paradas = paradas;
     try {
       _paradas.forEach((map) {
         Firestore.instance.collection("paradas").add(map).then((doc) {
-//        cartProduct.cid = doc.documentID;
           print(map['CodigoParada']);
         });
       });
-    }catch(e){
+    } catch (e) {
       print(e);
     }
+  }
+
+  _montarHorarios() {
+    Map<String, Map<String, dynamic>> _horarios = horarios;
+    _horarios.keys.forEach((linha) {
+      Map<String, dynamic> horarioMap = _horarios[linha];
+      horarioMap['CodigoLinha'] = linha;
+
+      Firestore.instance.collection("horarios").add(horarioMap).then((doc) {
+        print(linha);
+      });
+    });
   }
 }

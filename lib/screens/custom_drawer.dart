@@ -2,6 +2,7 @@ import 'package:admin_itp/screens/paradas_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'administradores_screen.dart';
+import 'horarios_screen.dart';
 import 'linhas_screen.dart';
 
 class CustomDrawer extends StatefulWidget {
@@ -124,6 +125,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               Navigator.of(context).pop();
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => LinhasScreen()));
+                            },
+                          ),
+                          
+                          ListTile(
+                            leading: Icon(Icons.directions_bus),
+                            title: Text("Horários"),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => HorariosScreen()));
                             },
                           ),
 
