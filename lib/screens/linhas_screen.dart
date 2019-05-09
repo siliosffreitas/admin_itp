@@ -47,7 +47,7 @@ class _ClientesScreenState extends State<ClientesScreen> {
       body: StreamBuilder<QuerySnapshot>(
           stream: Firestore.instance
               .collection('linhas')
-//              .orderBy('ordenacao_pesquisa', descending: false)
+              .orderBy('CodigoLinha', descending: false)
               .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
