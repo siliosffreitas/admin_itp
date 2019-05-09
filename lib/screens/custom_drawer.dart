@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'administradores_screen.dart';
+import 'linhas_screen.dart';
 
 class CustomDrawer extends StatefulWidget {
   @override
@@ -120,8 +121,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             title: Text("Linhas"),
                             onTap: () {
                               Navigator.of(context).pop();
-//                              Navigator.of(context).push(MaterialPageRoute(
-//                                  builder: (context) => ClientesScreen()));
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => ClientesScreen()));
                             },
                           ),
 
