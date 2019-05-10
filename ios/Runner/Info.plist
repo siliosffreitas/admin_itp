@@ -54,6 +54,18 @@
         </dict>
     </array>
 
+        <key>io.flutter.embedded_views_preview</key>
+        <string>YES</string>
+
+        <key>NSLocationWhenInUseUsageDescription</key>
+        <string>O ITP precisa saber qual sua localização para mostrar as paradas próximas</string>
+        <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+        <string>Quando estiver em uso</string>
+        <key>NSLocationUsageDescription</key>
+        <string>Older devices need location.</string>
+        <key>NSLocationAlwaysUsageDescription</key>
+        <string>Posso usar sempre sua localização?</string>
+
 
 </dict>
 </plist>
