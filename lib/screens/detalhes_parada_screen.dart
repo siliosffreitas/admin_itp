@@ -2,18 +2,28 @@ import 'package:admin_itp/screens/primeiramente_cadastr_para_ver.dart';
 import 'package:admin_itp/tiles/linha_tile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class DetalhesParadaScreen extends StatelessWidget {
+class DetalhesParadaScreen extends StatefulWidget {
   final int codigoParada;
 
   DetalhesParadaScreen({Key key, @required this.codigoParada})
       : super(key: key);
 
   @override
+  _DetalhesParadaScreenState createState() => _DetalhesParadaScreenState();
+}
+
+class _DetalhesParadaScreenState extends State<DetalhesParadaScreen> {
+  GoogleMapController _mapController;
+
+  LatLng _latLng;
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Parada ${codigoParada}"),
+        title: Text("Parada ${widget.codigoParada}"),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -21,13 +31,12 @@ class DetalhesParadaScreen extends StatelessWidget {
             StreamBuilder(
                 stream: Firestore.instance
                     .collection('paradas')
-                    .where("CodigoParada", isEqualTo: codigoParada)
-//          .orderBy(field)
+                    .where("CodigoParada", isEqualTo: widget.codigoParada)
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return Container(
-                        height: 200,
+                        height: 300,
                         alignment: Alignment.center,
                         child: CircularProgressIndicator());
                   } else {
@@ -36,8 +45,6 @@ class DetalhesParadaScreen extends StatelessWidget {
                       return PrimeiramenteCadastreParaVer();
                     }
 
-//                    return _createListLinhas(
-//                        snapshot.data.documents[0]['Linhas']);
                     return _desenharParada(snapshot.data.documents[0]);
                   }
                 }),
@@ -57,7 +64,7 @@ class DetalhesParadaScreen extends StatelessWidget {
             StreamBuilder(
                 stream: Firestore.instance
                     .collection('linhasDaParada')
-                    .where("CodigoParada", isEqualTo: codigoParada)
+                    .where("CodigoParada", isEqualTo: widget.codigoParada)
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
@@ -82,17 +89,24 @@ class DetalhesParadaScreen extends StatelessWidget {
   }
 
   _desenharParada(DocumentSnapshot parada) {
+    _latLng = LatLng(
+      double.parse(parada.data['Lat']),
+      double.parse(parada.data['Long']),
+    );
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Container(
-          height: 150,
-          child: Column(
-            children: <Widget>[
-              Text("lat ${parada.data['Lat']}"),
-              Text("long ${parada.data['Long']}"),
-            ],
+          height: 250,
+          child: GoogleMap(
+            onMapCreated: _onMapCreated,
+            markers: _createMarker(_latLng),
+            initialCameraPosition: CameraPosition(
+              target: _latLng,
+              zoom: 15,
+            ),
           ),
         ),
         Divider(
@@ -123,22 +137,23 @@ class DetalhesParadaScreen extends StatelessWidget {
         return LinhaTile.fromMap(linha);
       }).toList(),
     );
+  }
 
-//    return ListView.separated(
-//      itemCount: linhas.length,
-//      itemBuilder: (content, index) {
-////        return ListTile(
-////          leading: CircleAvatar(
-////            child: Icon(Icons.directions_bus),
-////          ),
-////          title: Text(linhas[index]['CodigoLinha']),
-////        );
-//        return LinhaTile.fromMap(linhas.elementAt(index));
-//      },
-////      separatorBuilder: (context, index) => Divider(
-////            indent: 16,
-////            height: 1,
-////          ),
-//    );
+  void _onMapCreated(GoogleMapController controller) async {
+    _mapController = controller;
+    setState(() {
+      _mapController = controller;
+    });
+  }
+
+  Set<Marker> _createMarker(LatLng latLong) {
+    return <Marker>[
+      Marker(
+          markerId: MarkerId("marker_1"),
+          position: latLong,
+          icon: Theme.of(context).platform == TargetPlatform.iOS
+              ? BitmapDescriptor.fromAsset("assets/ios/stopbus_green.png")
+              : BitmapDescriptor.fromAsset("assets/android/stopbus_green.png")),
+    ].toSet();
   }
 }

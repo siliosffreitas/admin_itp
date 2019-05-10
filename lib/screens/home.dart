@@ -23,6 +23,21 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    Firestore.instance.settings(timestampsInSnapshotsEnabled: true);
+
+
+//    FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+//    FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+//        .setTimestampsInSnapshotsEnabled(true)
+//       .build();
+//    firestore.setFirestoreSettings(settings);
+  }
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
