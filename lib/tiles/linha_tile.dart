@@ -7,9 +7,11 @@ class LinhaTile extends StatelessWidget {
 
   final bool interable;
 
-  LinhaTile(this.snapshot, {this.interable: true});
+  Map<dynamic, dynamic> _linha;
 
-//  LinhaTile.fromMap(this._client, {this.interable: false});
+  LinhaTile(this.snapshot, {this.interable: true}) : _linha = snapshot.data;
+
+  LinhaTile.fromMap(this._linha, {this.interable: false});
 
   @override
   Widget build(BuildContext context) {
@@ -17,15 +19,14 @@ class LinhaTile extends StatelessWidget {
       leading: CircleAvatar(
         child: Icon(Icons.directions_bus),
       ),
-      title: Text(snapshot.data["CodigoLinha"] ?? "-"),
-      subtitle: Text(
-          snapshot.data["Denominacao"] ?? snapshot.data['Denomicao'] ?? "-"),
+      title: Text(_linha["CodigoLinha"] ?? "-"),
+      subtitle: _linha['Denomicao'] == null ? null : Text(_linha['Denomicao']),
       trailing: IconButton(
           icon: Icon(Icons.access_alarms),
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => HorariosLinhaScreen(
-                      codigoLinha: snapshot.data["CodigoLinha"],
+                      codigoLinha: _linha["CodigoLinha"],
                     )));
           }),
 //      onTap: interable
