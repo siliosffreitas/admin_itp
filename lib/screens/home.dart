@@ -1,11 +1,16 @@
 import 'package:admin_itp/utils/consts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+//import 'package:location/location.dart' as LocationManager;
+
 
 import 'custom_drawer.dart';
+import 'linhas_screen.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
+
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -24,6 +29,23 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
+  GoogleMapController _mapController;
+
+//  Future<LatLng> _getUserLocation() async {
+//    LocationData currentLocation ;
+//    final location = LocationManager.Location();
+//    try {
+//      currentLocation = await location.getLocation();
+//      final lat = currentLocation.["latitude"];
+//      final lng = currentLocation["longitude"];
+//      final center = LatLng(lat, lng);
+//      return center;
+//    } on Exception catch (e) {
+//      currentLocation = null;
+//      return null;
+//    }
+//  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -38,6 +60,14 @@ class _MyHomePageState extends State<MyHomePage> {
 //       .build();
 //    firestore.setFirestoreSettings(settings);
   }
+
+  void _onMapCreated(GoogleMapController controller) async {
+//    _mapController = controller;
+    setState(() {
+      _mapController = controller;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -51,29 +81,56 @@ class _MyHomePageState extends State<MyHomePage> {
           // Here we take the value from the MyHomePage object that was created by
           // the App.build method, and use it to set our appbar title.
           title: Text(widget.title),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: (){
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => LinhasScreen()));
+              },
+              tooltip: "Buscar por linha",
+            )
+          ],
         ),
         drawer: CustomDrawer(),
-        body: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              RaisedButton(
-                  child: Text("Montar linhas"), onPressed: null //_montarLinhas,
-                  ),
-              RaisedButton(
-                  child: Text("Montar paradas"),
-                  onPressed: null //_montarParadas,
-                  ),
-              RaisedButton(
-                  child: Text("Montar horários"),
-                  onPressed: null //_montarHorarios,
-                  ),
-              RaisedButton(
-                child: Text("Montar linhas da parada"),
-                onPressed: null//_montarLinhasDaParada,
-              )
-            ],
-          ),
-        )
+        body:
+//        SingleChildScrollView(
+//          child:
+
+
+          Container(
+            child: GoogleMap(
+//              compassEnabled: false,
+            myLocationButtonEnabled: false,
+              onMapCreated: _onMapCreated,
+//            markers: _createMarker(_latLng),
+              initialCameraPosition: CameraPosition(
+                target: LatLng(-5.082618, -42.790596),
+                zoom: 11,
+              ),
+            ),
+          )
+
+//          Column(
+//            children: <Widget>[
+//              RaisedButton(
+//                  child: Text("Montar linhas"), onPressed: null //_montarLinhas,
+//                  ),
+//              RaisedButton(
+//                  child: Text("Montar paradas"),
+//                  onPressed: null //_montarParadas,
+//                  ),
+//              RaisedButton(
+//                  child: Text("Montar horários"),
+//                  onPressed: null //_montarHorarios,
+//                  ),
+//              RaisedButton(
+//                child: Text("Montar linhas da parada"),
+//                onPressed: null//_montarLinhasDaParada,
+//              )
+//            ],
+//          ),
+//        )
 // This trailing comma makes auto-formatting nicer for build methods.
         );
   }
