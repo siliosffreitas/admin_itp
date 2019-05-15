@@ -1,16 +1,16 @@
+import 'dart:async';
+import 'package:flutter/services.dart';
 import 'package:admin_itp/utils/consts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-//import 'package:location/location.dart' as LocationManager;
-
+import 'package:location/location.dart';
 
 import 'custom_drawer.dart';
 import 'linhas_screen.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
-
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -28,23 +28,20 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   GoogleMapController _mapController;
 
-//  Future<LatLng> _getUserLocation() async {
-//    LocationData currentLocation ;
-//    final location = LocationManager.Location();
-//    try {
-//      currentLocation = await location.getLocation();
-//      final lat = currentLocation.["latitude"];
-//      final lng = currentLocation["longitude"];
-//      final center = LatLng(lat, lng);
-//      return center;
-//    } on Exception catch (e) {
-//      currentLocation = null;
-//      return null;
-//    }
-//  }
+  LocationData _startLocation;
+  LocationData _currentLocation;
+  bool _permission = false;
+  Location _locationService = new Location();
+  StreamSubscription<LocationData> _locationSubscription;
+  Completer<GoogleMapController> _controller = Completer();
+  static final CameraPosition _initialCamera = CameraPosition(
+    target: LatLng(-5.082618, -42.790596),
+    zoom: 11,
+  );
+  CameraPosition _currentCameraPosition;
+  String error;
 
   @override
   void initState() {
@@ -53,15 +50,72 @@ class _MyHomePageState extends State<MyHomePage> {
 
     Firestore.instance.settings(timestampsInSnapshotsEnabled: true);
 
-
 //    FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 //    FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
 //        .setTimestampsInSnapshotsEnabled(true)
 //       .build();
 //    firestore.setFirestoreSettings(settings);
+
+    initPlatformState();
+  }
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  initPlatformState() async {
+    await _locationService.changeSettings(
+        accuracy: LocationAccuracy.HIGH, interval: 1000);
+
+    LocationData location;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      bool serviceStatus = await _locationService.serviceEnabled();
+      print("Service status: $serviceStatus");
+      if (serviceStatus) {
+        _permission = await _locationService.requestPermission();
+        print("Permission: $_permission");
+        if (_permission) {
+          location = await _locationService.getLocation();
+
+          _locationSubscription = _locationService
+              .onLocationChanged()
+              .listen((LocationData result) async {
+            _currentCameraPosition = CameraPosition(
+                target: LatLng(result.latitude, result.longitude), zoom: 16);
+
+            final GoogleMapController controller = await _controller.future;
+            controller.animateCamera(
+                CameraUpdate.newCameraPosition(_currentCameraPosition));
+
+            if (mounted) {
+              setState(() {
+                _currentLocation = result;
+              });
+            }
+          });
+        }
+      } else {
+        bool serviceStatusResult = await _locationService.requestService();
+        print("Service status activated after request: $serviceStatusResult");
+        if (serviceStatusResult) {
+          initPlatformState();
+        }
+      }
+    } on PlatformException catch (e) {
+      print(e);
+      if (e.code == 'PERMISSION_DENIED') {
+        error = e.message;
+      } else if (e.code == 'SERVICE_STATUS_ERROR') {
+        error = e.message;
+      }
+      location = null;
+    }
+
+    setState(() {
+      _startLocation = location;
+    });
   }
 
   void _onMapCreated(GoogleMapController controller) async {
+    _controller.complete(controller);
 //    _mapController = controller;
     setState(() {
       _mapController = controller;
@@ -84,9 +138,9 @@ class _MyHomePageState extends State<MyHomePage> {
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.search),
-              onPressed: (){
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => LinhasScreen()));
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => LinhasScreen()));
               },
               tooltip: "Buscar por linha",
             )
@@ -97,19 +151,24 @@ class _MyHomePageState extends State<MyHomePage> {
 //        SingleChildScrollView(
 //          child:
 
+            Container(
+          child: GoogleMap(
 
-          Container(
-            child: GoogleMap(
 //              compassEnabled: false,
             myLocationButtonEnabled: false,
-              onMapCreated: _onMapCreated,
+            onMapCreated: _onMapCreated,
+//            onMapCreated: (GoogleMapController controller) {
+//              _controller.complete(controller);
+//            },
+//            initialCameraPosition: _currentCameraPosition,
+            initialCameraPosition: _initialCamera,
 //            markers: _createMarker(_latLng),
-              initialCameraPosition: CameraPosition(
-                target: LatLng(-5.082618, -42.790596),
-                zoom: 11,
-              ),
-            ),
-          )
+//              initialCameraPosition: CameraPosition(
+//                target: LatLng(-5.082618, -42.790596),
+//                zoom: 11,
+//              ),
+          ),
+        )
 
 //          Column(
 //            children: <Widget>[
@@ -195,7 +254,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
 //        print("--- fim ${parada}");
 //      print(linhaParada);
-        Firestore.instance.collection("linhasDaParada").add(linhaParada).then((doc) {
+        Firestore.instance
+            .collection("linhasDaParada")
+            .add(linhaParada)
+            .then((doc) {
           print(parada);
         });
       }
