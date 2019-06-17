@@ -183,25 +183,23 @@ class _MyHomePageState extends State<MyHomePage> {
                         if (!snapshot.hasData || snapshot.data.isEmpty) {
                           return Container();
                         }
-//                        print(
-//                            snapshot
-//                        );
-//                        return Container();
+
                         return Container(
                           height: 60,
                           color: Colors.white,
                           child: ListView(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
                             scrollDirection: Axis.horizontal,
                             children: snapshot.data.map((linha) {
-                              print("  AAAA   ${linha}");
-
                               return Padding(
-                                padding: const EdgeInsets.only(left: 16),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 4),
                                 child: Chip(
-
-                                  avatar: Icon(Icons.directions_bus),
+                                  avatar: Icon(
+                                    Icons.directions_bus,
+                                    color: _determinarCor(linha['cor']),
+                                  ),
                                   label: Text(linha['CodigoLinha']),
-//                                  backgroundColor: Colors.greenAccent,
                                   deleteIcon: Icon(Icons.close),
                                   onDeleted: () {
                                     _rastreamentoBloc
@@ -209,16 +207,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                   },
                                 ),
                               );
-
-//                              return Container();
-//                              return ListTile(
-//                                leading: Icon(Icons.directions_bus),
-//                                title: Text("AA"),
-//                                trailing: IconButton(
-//                                    icon: Icon(Icons.close), onPressed: () {
-//                                  _rastreamentoBloc.removerLinha(linha['CodigoLinha']);
-//                                }),
-//                              );
                             }).toList(),
                           ),
                         );
@@ -249,6 +237,33 @@ class _MyHomePageState extends State<MyHomePage> {
 //        )
 // This trailing comma makes auto-formatting nicer for build methods.
         );
+  }
+
+  _determinarCor(int cor) {
+    switch (cor) {
+      case 0:
+        return Colors.redAccent;
+      case 1:
+        return Colors.green;
+      case 2:
+        return Colors.blueAccent;
+      case 3:
+        return Colors.purpleAccent;
+      case 4:
+        return Colors.orange;
+      case 5:
+        return Colors.black12;
+      case 6:
+        return Colors.amberAccent;
+      case 7:
+        return Colors.cyanAccent;
+      case 8:
+        return Colors.lightGreenAccent;
+      case 9:
+        return Colors.pinkAccent;
+      default:
+        return Colors.grey;
+    }
   }
 
   String _titleInfowindow(Map<String, dynamic> parada) {
