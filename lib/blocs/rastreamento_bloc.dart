@@ -1,4 +1,5 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
 
 class RastreamentoBloc implements BlocBase {
@@ -17,8 +18,33 @@ class RastreamentoBloc implements BlocBase {
         linha['cor'] = _procuraPrimeiraCorDisponivel();
         _linhasRastreadas.add(linha);
         _linhasRastreadasController.add(_linhasRastreadas);
+
+        _recuperarItinerarios(linha['CodigoLinha']);
       }
     }
+  }
+
+  _recuperarItinerarios(String idLinha) {
+    print(idLinha);
+    Firestore.instance
+        .collection("itinerarios")
+        .where("CodigoLinha", isEqualTo: idLinha)
+        .orderBy('NomeItinerario', descending: false)
+        .snapshots()
+        .listen((snapshot) {
+
+      int position = _procuraLinha(idLinha);
+      _linhasRastreadas.elementAt(position)['Caminhos'] = snapshot;
+      _linhasRastreadasController.add(_linhasRastreadas);
+
+//      print(snapshot.documents.);
+      snapshot.documents.forEach((it){
+        print(it.data);
+      });
+//      _linhas = snapshot.documents;
+//      print(_linhas.length);
+//      _linhasController.sink.add(_linhas);
+    });
   }
 
   _procuraPrimeiraCorDisponivel() {
@@ -33,7 +59,6 @@ class RastreamentoBloc implements BlocBase {
       if (!encontrouCor) {
         return cor;
       }
-
     }
     return MAX_LINE;
   }
