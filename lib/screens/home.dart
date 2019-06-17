@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:admin_itp/blocs/paradas_bloc.dart';
+import 'package:admin_itp/blocs/rastreamento_bloc.dart';
 import 'package:admin_itp/utils/utils.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/services.dart';
@@ -130,6 +131,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final _paradasBloc = BlocProvider.of<ParadasBloc>(context);
+    final _rastreamentoBloc = BlocProvider.of<RastreamentoBloc>(context);
+
     return Scaffold(
         appBar: AppBar(
           // Here we take the value from the MyHomePage object that was created by
@@ -153,23 +156,74 @@ class _MyHomePageState extends State<MyHomePage> {
               if (!snapshot.hasData) {
                 return Center(child: CircularProgressIndicator());
               }
-              return Container(
-                child: GoogleMap(
+              return Stack(
+                alignment: Alignment(0, 1),
+                children: <Widget>[
+                  Container(
+                    child: GoogleMap(
 //              compassEnabled: false,
-                  myLocationButtonEnabled: false,
-                  onMapCreated: _onMapCreated,
+                      myLocationButtonEnabled: false,
+                      onMapCreated: _onMapCreated,
 //            onMapCreated: (GoogleMapController controller) {
 //              _controller.complete(controller);
 //            },
 //            initialCameraPosition: _currentCameraPosition,
-                  initialCameraPosition: _initialCamera,
-                  markers: _desenharParadasProximas(snapshot.data),
+                      initialCameraPosition: _initialCamera,
+                      markers: _desenharParadasProximas(snapshot.data),
 //            markers: _createMarker(_latLng),
 //              initialCameraPosition: CameraPosition(
 //                target: LatLng(-5.082618, -42.790596),
 //                zoom: 11,
 //              ),
-                ),
+                    ),
+                  ),
+                  StreamBuilder<List<Map<String, dynamic>>>(
+                      stream: _rastreamentoBloc.outLinhasRastreadas,
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData || snapshot.data.isEmpty) {
+                          return Container();
+                        }
+//                        print(
+//                            snapshot
+//                        );
+//                        return Container();
+                        return Container(
+                          height: 60,
+                          color: Colors.white,
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: snapshot.data.map((linha) {
+                              print("  AAAA   ${linha}");
+
+                              return Padding(
+                                padding: const EdgeInsets.only(left: 16),
+                                child: Chip(
+
+                                  avatar: Icon(Icons.directions_bus),
+                                  label: Text(linha['CodigoLinha']),
+//                                  backgroundColor: Colors.greenAccent,
+                                  deleteIcon: Icon(Icons.close),
+                                  onDeleted: () {
+                                    _rastreamentoBloc
+                                        .removerLinha(linha['CodigoLinha']);
+                                  },
+                                ),
+                              );
+
+//                              return Container();
+//                              return ListTile(
+//                                leading: Icon(Icons.directions_bus),
+//                                title: Text("AA"),
+//                                trailing: IconButton(
+//                                    icon: Icon(Icons.close), onPressed: () {
+//                                  _rastreamentoBloc.removerLinha(linha['CodigoLinha']);
+//                                }),
+//                              );
+                            }).toList(),
+                          ),
+                        );
+                      })
+                ],
               );
             })
 

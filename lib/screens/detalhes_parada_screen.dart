@@ -1,8 +1,12 @@
+import 'package:admin_itp/blocs/rastreamento_bloc.dart';
 import 'package:admin_itp/screens/primeiramente_cadastr_para_ver.dart';
 import 'package:admin_itp/tiles/linha_tile.dart';
+import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import 'horarios_linha_screen.dart';
 
 class DetalhesParadaScreen extends StatefulWidget {
   final int codigoParada;
@@ -21,6 +25,7 @@ class _DetalhesParadaScreenState extends State<DetalhesParadaScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final _rastreamentoBloc = BlocProvider.of<RastreamentoBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("Parada ${widget.codigoParada}"),
@@ -61,7 +66,7 @@ class _DetalhesParadaScreenState extends State<DetalhesParadaScreen> {
                     fontSize: 20,
                   ),
                 )),
-            StreamBuilder(
+            StreamBuilder<QuerySnapshot>(
                 stream: Firestore.instance
                     .collection('linhasDaParada')
                     .where("CodigoParada", isEqualTo: widget.codigoParada)
@@ -80,6 +85,34 @@ class _DetalhesParadaScreenState extends State<DetalhesParadaScreen> {
 
                     return _createListLinhas(
                         snapshot.data.documents[0]['Linhas']);
+
+//                    return ListView(
+//                      children: snapshot.data.documents[0]['Linhas']
+//                          .map<Widget>((linha) {
+//
+//                            print(linha);
+//                        return ListTile(
+//                          leading: CircleAvatar(
+//                            child: Icon(Icons.directions_bus),
+//                          ),
+//                          title: Text(linha["CodigoLinha"] ?? "-"),
+//                          subtitle: linha['Denomicao'] == null
+//                              ? null
+//                              : Text(linha['Denomicao']),
+//                          trailing: IconButton(
+//                              icon: Icon(Icons.access_alarms),
+//                              onPressed: () {
+//                                Navigator.of(context).push(MaterialPageRoute(
+//                                    builder: (context) => HorariosLinhaScreen(
+//                                          codigoLinha: linha["CodigoLinha"],
+//                                        )));
+//                              }),
+//                          onTap: () {
+//                            _rastreamentoBloc.adicionarLinha(linha);
+//                          },
+//                        );
+//                      }).toList(),
+//                    );
                   }
                 }),
           ],
@@ -132,7 +165,32 @@ class _DetalhesParadaScreenState extends State<DetalhesParadaScreen> {
   }
 
   _createListLinhas(List linhas) {
+//    final _rastreamentoBloc = BlocProvider.of<RastreamentoBloc>(context);
     return Column(
+//      children: linhas.map((linha){
+//
+//        return ListTile(
+//          leading: CircleAvatar(
+//            child: Icon(Icons.directions_bus),
+//          ),
+//          title: Text(linha["CodigoLinha"] ?? "-"),
+//          subtitle: linha['Denomicao'] == null ? null : Text(linha['Denomicao']),
+//          trailing: IconButton(
+//              icon: Icon(Icons.access_alarms),
+//              onPressed: () {
+//                Navigator.of(context).push(MaterialPageRoute(
+//                    builder: (context) => HorariosLinhaScreen(
+//                      codigoLinha: linha["CodigoLinha"],
+//                    )));
+//              }),
+//          onTap: () {
+//            _rastreamentoBloc.adicionarLinha(linha);
+//          },
+//        );
+//
+//      }).toList(),
+      
+      
       children: linhas.map((linha) {
         return LinhaTile.fromMap(linha);
       }).toList(),
