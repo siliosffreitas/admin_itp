@@ -6,7 +6,7 @@ import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../paradas_bloc.dart';
+import 'package:admin_itp/blocs/paradas_bloc.dart';
 
 class ParadasScreen extends StatefulWidget {
   @override

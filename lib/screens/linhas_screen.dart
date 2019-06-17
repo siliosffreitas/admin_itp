@@ -1,6 +1,8 @@
 
+import 'package:admin_itp/blocs/linhas_bloc.dart';
 import 'package:admin_itp/screens/primeiramente_cadastr_para_ver.dart';
 import 'package:admin_itp/tiles/linha_tile.dart';
+import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -25,6 +27,7 @@ class _LinhasScreenState extends State<LinhasScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final _linhasBloc = BlocProvider.of<LinhasBloc>(context);
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -44,11 +47,8 @@ class _LinhasScreenState extends State<LinhasScreen> {
 //          )
         ],
       ),
-      body: StreamBuilder<QuerySnapshot>(
-          stream: Firestore.instance
-              .collection('linhas')
-              .orderBy('CodigoLinha', descending: false)
-              .snapshots(),
+      body: StreamBuilder<List<DocumentSnapshot>>(
+          stream: _linhasBloc.outLinhas,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());
@@ -68,11 +68,11 @@ class _LinhasScreenState extends State<LinhasScreen> {
 //
 //                return _createListClients(documents);
 //              }
-              if (snapshot.data.documents == null ||
-                  snapshot.data.documents.isEmpty) {
+              if (snapshot.data == null ||
+                  snapshot.data.isEmpty) {
                 return PrimeiramenteCadastreParaVer();
               }
-              return _createListLinhas(snapshot.data.documents);
+              return _createListLinhas(snapshot.data);
             }
           }),
 //      floatingActionButton: FloatingActionButton(

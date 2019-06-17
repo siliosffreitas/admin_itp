@@ -11,11 +11,11 @@ class ParadasBloc implements BlocBase {
   Stream<List<DocumentSnapshot>> get outParadas => _paradasController.stream;
 
   ParadasBloc(){
-    _addPedidosListener();
+    _addParadasListener();
   }
 
 
-  _addPedidosListener() {
+  _addParadasListener() {
     Firestore.instance
         .collection("paradas")
         .orderBy('CodigoParada', descending: false)
