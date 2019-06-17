@@ -46,6 +46,7 @@ class HorariosLinhaScreen extends StatelessWidget {
             if (snapshot.data.documents[0]['times']['sunday'] != null) {
               count++;
               tabs.add(Tab(
+
                 text: "DOMINGO",
               ));
               children.add(_gridTab(snapshot.data.documents[0]['times']['sunday'] ));

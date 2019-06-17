@@ -194,74 +194,74 @@ class _MyHomePageState extends State<MyHomePage> {
         );
   }
 
-  _montarLinhas() {
-    List<Map<String, dynamic>> _linhas = linhas;
-    try {
-      _linhas.forEach((map) {
-        Firestore.instance.collection("linhas").add(map).then((doc) {
-//        cartProduct.cid = doc.documentID;
-          print(map['CodigoLinha']);
-        });
-      });
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  _montarParadas() {
-    List<Map<String, dynamic>> _paradas = paradas;
-    try {
-      _paradas.forEach((map) {
-        Firestore.instance.collection("paradas").add(map).then((doc) {
-          print(map['CodigoParada']);
-        });
-      });
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  _montarHorarios() {
-    Map<String, Map<String, dynamic>> _horarios = horarios;
-    _horarios.keys.forEach((linha) {
-      Map<String, dynamic> horarioMap = _horarios[linha];
-      horarioMap['CodigoLinha'] = linha;
-
-      Firestore.instance.collection("horarios").add(horarioMap).then((doc) {
-        print(linha);
-      });
-    });
-  }
-
-  _montarLinhasDaParada() {
-    List<List<Map<String, dynamic>>> _linhasDaParada = linhasDaParada;
-    for (int parada = 0; parada < _linhasDaParada.length; parada++) {
-      if (_linhasDaParada[parada] != null) {
-        Map<String, dynamic> linhaParada = {
-          'CodigoParada': parada,
-          'Linhas': []
-        };
-//        print("--- inicio ${parada}");
-        for (int linha = 0; linha < _linhasDaParada[parada].length; linha++) {
-//          print("  * ${parada} ${_linhasDaParada[parada][linha]['CodigoLinha']}");
-          Map<String, dynamic> linhaMap = {
-            'CodigoLinha': _linhasDaParada[parada][linha]['CodigoLinha'],
-          };
-          List ds = linhaParada['Linhas'];
-          ds.add(linhaMap);
-          linhaParada['Linhas'] = ds;
-        }
-
-//        print("--- fim ${parada}");
-//      print(linhaParada);
-        Firestore.instance
-            .collection("linhasDaParada")
-            .add(linhaParada)
-            .then((doc) {
-          print(parada);
-        });
-      }
-    }
+//  _montarLinhas() {
+//    List<Map<String, dynamic>> _linhas = linhas;
+//    try {
+//      _linhas.forEach((map) {
+//        Firestore.instance.collection("linhas").add(map).then((doc) {
+////        cartProduct.cid = doc.documentID;
+//          print(map['CodigoLinha']);
+//        });
+//      });
+//    } catch (e) {
+//      print(e);
+//    }
+//  }
+//
+//  _montarParadas() {
+//    List<Map<String, dynamic>> _paradas = paradas;
+//    try {
+//      _paradas.forEach((map) {
+//        Firestore.instance.collection("paradas").add(map).then((doc) {
+//          print(map['CodigoParada']);
+//        });
+//      });
+//    } catch (e) {
+//      print(e);
+//    }
+//  }
+//
+//  _montarHorarios() {
+//    Map<String, Map<String, dynamic>> _horarios = horarios;
+//    _horarios.keys.forEach((linha) {
+//      Map<String, dynamic> horarioMap = _horarios[linha];
+//      horarioMap['CodigoLinha'] = linha;
+//
+//      Firestore.instance.collection("horarios").add(horarioMap).then((doc) {
+//        print(linha);
+//      });
+//    });
+//  }
+//
+//  _montarLinhasDaParada() {
+//    List<List<Map<String, dynamic>>> _linhasDaParada = linhasDaParada;
+//    for (int parada = 0; parada < _linhasDaParada.length; parada++) {
+//      if (_linhasDaParada[parada] != null) {
+//        Map<String, dynamic> linhaParada = {
+//          'CodigoParada': parada,
+//          'Linhas': []
+//        };
+////        print("--- inicio ${parada}");
+//        for (int linha = 0; linha < _linhasDaParada[parada].length; linha++) {
+////          print("  * ${parada} ${_linhasDaParada[parada][linha]['CodigoLinha']}");
+//          Map<String, dynamic> linhaMap = {
+//            'CodigoLinha': _linhasDaParada[parada][linha]['CodigoLinha'],
+//          };
+//          List ds = linhaParada['Linhas'];
+//          ds.add(linhaMap);
+//          linhaParada['Linhas'] = ds;
+//        }
+//
+////        print("--- fim ${parada}");
+////      print(linhaParada);
+//        Firestore.instance
+//            .collection("linhasDaParada")
+//            .add(linhaParada)
+//            .then((doc) {
+//          print(parada);
+//        });
+//      }
+//    }
 
 //    Map<String, Map<String, dynamic>> _horarios = horarios;
 //    _horarios.keys.forEach((linha) {
@@ -272,5 +272,5 @@ class _MyHomePageState extends State<MyHomePage> {
 //        print(linha);
 //      });
 //    });
-  }
+//  }
 }

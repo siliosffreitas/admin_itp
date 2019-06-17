@@ -2,8 +2,11 @@
 import 'package:admin_itp/screens/primeiramente_cadastr_para_ver.dart';
 import 'package:admin_itp/tiles/linha_tile.dart';
 import 'package:admin_itp/tiles/parada_tile.dart';
+import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
+import '../paradas_bloc.dart';
 
 class ParadasScreen extends StatefulWidget {
   @override
@@ -26,6 +29,8 @@ class _ParadasScreenState extends State<ParadasScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final _paradasBloc = BlocProvider.of<ParadasBloc>(context);
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -45,11 +50,8 @@ class _ParadasScreenState extends State<ParadasScreen> {
 //          )
         ],
       ),
-      body: StreamBuilder<QuerySnapshot>(
-          stream: Firestore.instance
-              .collection('paradas')
-              .orderBy('CodigoParada', descending: false)
-              .snapshots(),
+      body: StreamBuilder<List<DocumentSnapshot>>(
+          stream: _paradasBloc.outParadas,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());
@@ -69,11 +71,11 @@ class _ParadasScreenState extends State<ParadasScreen> {
 //
 //                return _createListClients(documents);
 //              }
-              if (snapshot.data.documents == null ||
-                  snapshot.data.documents.isEmpty) {
+              if (snapshot.data == null ||
+                  snapshot.data.isEmpty) {
                 return PrimeiramenteCadastreParaVer();
               }
-              return _createListParadas(snapshot.data.documents);
+              return _createListParadas(snapshot.data);
             }
           }),
 //      floatingActionButton: FloatingActionButton(
@@ -87,7 +89,7 @@ class _ParadasScreenState extends State<ParadasScreen> {
     );
   }
 
-  _createListParadas(Iterable<DocumentSnapshot> documents) {
+  _createListParadas(List<DocumentSnapshot> documents) {
     return ListView.separated(
       itemCount: documents.length,
       itemBuilder: (content, index) {
