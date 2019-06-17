@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:admin_itp/blocs/paradas_bloc.dart';
 import 'package:admin_itp/utils/utils.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
@@ -11,6 +10,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 import 'custom_drawer.dart';
+import 'detalhes_parada_screen.dart';
 import 'linhas_screen.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -115,6 +115,16 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _mapController = controller;
     });
+
+//    _mapController.onInfoWindowTapped.add((Marker marker) {
+//      for (var stop in _nextsStops) {
+//        if (marker.options.infoWindowText.title == _titleInfowindow(stop)) {
+//          Navigator.of(context).push(MaterialPageRoute(
+//              builder: (BuildContext context) => StopScreen(stop)));
+//          break;
+//        }
+//      }
+//    });
   }
 
   @override
@@ -187,6 +197,10 @@ class _MyHomePageState extends State<MyHomePage> {
         );
   }
 
+  String _titleInfowindow(Map<String, dynamic> parada) {
+    return 'Parada ${parada['CodigoParada']} • ${parada['Denomicao']}';
+  }
+
   Set<Marker> _desenharParadasProximas(List<DocumentSnapshot> paradas) {
     Set<Marker> _markers = Set();
 
@@ -203,11 +217,18 @@ class _MyHomePageState extends State<MyHomePage> {
               markerId: MarkerId("${parada.data['CodigoParada']}"),
               position: LatLng(lat, long),
               infoWindow: InfoWindow(
-                title:
-                    'Parada ${parada.data['CodigoParada']} • ${parada.data['Denomicao']}',
-                snippet: '${parada.data['Endereco']}',
-              ),
-              icon: BitmapDescriptor.defaultMarker,
+                  title: _titleInfowindow(parada.data),
+                  snippet: '${parada.data['Endereco']}',
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => DetalhesParadaScreen(
+                              codigoParada: parada.data['CodigoParada'],
+                            )));
+                  }),
+              icon: Theme.of(context).platform == TargetPlatform.iOS
+                  ? BitmapDescriptor.fromAsset("assets/ios/stopbus_green.png")
+                  : BitmapDescriptor.fromAsset(
+                      "assets/android/stopbus_green.png"),
             ));
           }
         }
