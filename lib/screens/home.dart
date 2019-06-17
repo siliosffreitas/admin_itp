@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'dart:math';
+import 'package:admin_itp/blocs/paradas_bloc.dart';
+import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/services.dart';
 import 'package:admin_itp/utils/consts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,15 +14,6 @@ import 'linhas_screen.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
 
@@ -88,6 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
             if (mounted) {
               setState(() {
                 _currentLocation = result;
+                print(_currentLocation);
               });
             }
           });
@@ -116,7 +111,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _onMapCreated(GoogleMapController controller) async {
     _controller.complete(controller);
-//    _mapController = controller;
     setState(() {
       _mapController = controller;
     });
@@ -124,12 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    final _paradasBloc = BlocProvider.of<ParadasBloc>(context);
     return Scaffold(
         appBar: AppBar(
           // Here we take the value from the MyHomePage object that was created by
@@ -147,28 +136,31 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
         drawer: CustomDrawer(),
-        body:
-//        SingleChildScrollView(
-//          child:
-
-            Container(
-          child: GoogleMap(
-
+        body: StreamBuilder<List<DocumentSnapshot>>(
+            stream: _paradasBloc.outParadas,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(child: CircularProgressIndicator());
+              }
+              return Container(
+                child: GoogleMap(
 //              compassEnabled: false,
-            myLocationButtonEnabled: false,
-            onMapCreated: _onMapCreated,
+                  myLocationButtonEnabled: false,
+                  onMapCreated: _onMapCreated,
 //            onMapCreated: (GoogleMapController controller) {
 //              _controller.complete(controller);
 //            },
 //            initialCameraPosition: _currentCameraPosition,
-            initialCameraPosition: _initialCamera,
+                  initialCameraPosition: _initialCamera,
+                  markers: _desenharParadasProximas(snapshot.data),
 //            markers: _createMarker(_latLng),
 //              initialCameraPosition: CameraPosition(
 //                target: LatLng(-5.082618, -42.790596),
 //                zoom: 11,
 //              ),
-          ),
-        )
+                ),
+              );
+            })
 
 //          Column(
 //            children: <Widget>[
@@ -192,6 +184,56 @@ class _MyHomePageState extends State<MyHomePage> {
 //        )
 // This trailing comma makes auto-formatting nicer for build methods.
         );
+  }
+
+  Set<Marker> _desenharParadasProximas(List<DocumentSnapshot> paradas) {
+    Set<Marker> _markers = Set();
+//    if (_currentLocation != null) {
+//
+//      _markers.add(Marker(
+//        // This marker id can be anything that uniquely identifies each marker.
+//        markerId: MarkerId(_lastMapPosition.toString()),
+//        position: _lastMapPosition,
+//        infoWindow: InfoWindow(
+//          title: 'Really cool place',
+//          snippet: '5 Star Rating',
+//        ),
+//        icon: BitmapDescriptor.defaultMarker,
+//      ));
+//    }
+
+    paradas.forEach((parada) {
+      if (_currentLocation != null) {
+        if (parada.data['Lat'] != null && parada.data['Lat'] != null) {
+          double lat = double.parse(parada.data['Lat']);
+          double long = double.parse(parada.data['Long']);
+          double dist = _calcularDistancia(
+              _currentLocation.latitude, _currentLocation.longitude, lat, long);
+
+          if (dist < 0.005) {
+            print(dist);
+
+            _markers.add(Marker(
+              // This marker id can be anything that uniquely identifies each marker.
+              markerId: MarkerId("${parada.data['CodigoParada']}"),
+              position: LatLng(lat, long),
+              infoWindow: InfoWindow(
+                title:
+                    'Parada ${parada.data['CodigoParada']} • ${parada.data['Denomicao']}',
+                snippet: '${parada.data['Endereco']}',
+              ),
+              icon: BitmapDescriptor.defaultMarker,
+            ));
+          }
+        }
+      }
+    });
+
+    return _markers;
+  }
+
+  _calcularDistancia(double lat1, double long1, double lat2, double long2) {
+    return sqrt(pow(lat1 - lat2, 2) + pow(long1 - long2, 2));
   }
 
 //  _montarLinhas() {

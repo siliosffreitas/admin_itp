@@ -1,4 +1,3 @@
-
 import 'package:admin_itp/screens/primeiramente_cadastr_para_ver.dart';
 import 'package:admin_itp/tiles/linha_tile.dart';
 import 'package:admin_itp/tiles/parada_tile.dart';
@@ -16,17 +15,6 @@ class ParadasScreen extends StatefulWidget {
 class _ParadasScreenState extends State<ParadasScreen> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-//  String _query;
-
-//  _callSearch() async {
-//    String result = await showSearch(
-//        context: context, delegate: ClienteSearch(), query: _query);
-//
-//    setState(() {
-//      _query = result;
-//    });
-//  }
-
   @override
   Widget build(BuildContext context) {
     final _paradasBloc = BlocProvider.of<ParadasBloc>(context);
@@ -34,21 +22,7 @@ class _ParadasScreenState extends State<ParadasScreen> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title:
-//        _query != null && _query.trim().isNotEmpty
-//            ? InkWell(
-////                onTap: _callSearch,
-//                child: Text(_query),
-//              )
-//            :
-        Text("Paradas"),
-        actions: <Widget>[
-//          IconButton(
-//            icon: Icon(Icons.search),
-//            onPressed: _callSearch,
-//            tooltip: "Pesquisar cliente",
-//          )
-        ],
+        title: Text("Paradas"),
       ),
       body: StreamBuilder<List<DocumentSnapshot>>(
           stream: _paradasBloc.outParadas,
@@ -56,36 +30,12 @@ class _ParadasScreenState extends State<ParadasScreen> {
             if (!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());
             } else {
-//              _editandoTodosProdutos(snapshot.data.documents);
-//              __printTudo(snapshot.data.documents);
-//              if (_query != null && _query.trim().isNotEmpty) {
-//                // filtra localmente
-//                var documents = snapshot.data.documents.where((snapshot) =>
-//                    snapshot.data['ordenacao_pesquisa']
-//                        .toString()
-//                        .contains(removeDiacritics(_query)));
-//
-//                if (documents == null || documents.isEmpty) {
-//                  return NadaEncontradoNaPesquisa(query: _query);
-//                }
-//
-//                return _createListClients(documents);
-//              }
-              if (snapshot.data == null ||
-                  snapshot.data.isEmpty) {
+              if (snapshot.data == null || snapshot.data.isEmpty) {
                 return PrimeiramenteCadastreParaVer();
               }
               return _createListParadas(snapshot.data);
             }
           }),
-//      floatingActionButton: FloatingActionButton(
-//        tooltip: "Adicionar um novo cliente",
-//        onPressed: () async {
-//          final bool done = await Navigator.of(context).push(
-//              MaterialPageRoute(builder: (context) => EditClientScreen()));
-//        },
-//        child: Icon(Icons.person_add),
-//      ),
     );
   }
 
@@ -101,23 +51,4 @@ class _ParadasScreenState extends State<ParadasScreen> {
           ),
     );
   }
-
-//  __printTudo(List<DocumentSnapshot> docments){
-//    docments.forEach((doc) {
-//      print(doc.data);
-//    });
-//  }
-//
-//  _editandoTodosProdutos(List<DocumentSnapshot> docs) {
-//    docs.forEach((doc) {
-//      Firestore.instance
-//          .collection("clientes")
-//          .document(doc.documentID)
-//          .updateData({
-//        "ordenacao_pesquisa": removeDiacritics(doc.data['nome'])
-//      }).then((_doc) {
-//        print(doc.data['nome']);
-//      });
-//    });
-//  }
 }
