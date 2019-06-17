@@ -1,3 +1,5 @@
+
+final DISTANCE_SEARCH_SOPTS = 500;
 const List<Map<String, dynamic>> paradas = [
   {
     "CodigoParada": 2527,

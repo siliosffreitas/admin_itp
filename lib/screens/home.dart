@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:admin_itp/blocs/paradas_bloc.dart';
+import 'package:admin_itp/utils/utils.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/services.dart';
 import 'package:admin_itp/utils/consts.dart';
@@ -188,33 +189,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Set<Marker> _desenharParadasProximas(List<DocumentSnapshot> paradas) {
     Set<Marker> _markers = Set();
-//    if (_currentLocation != null) {
-//
-//      _markers.add(Marker(
-//        // This marker id can be anything that uniquely identifies each marker.
-//        markerId: MarkerId(_lastMapPosition.toString()),
-//        position: _lastMapPosition,
-//        infoWindow: InfoWindow(
-//          title: 'Really cool place',
-//          snippet: '5 Star Rating',
-//        ),
-//        icon: BitmapDescriptor.defaultMarker,
-//      ));
-//    }
 
     paradas.forEach((parada) {
       if (_currentLocation != null) {
         if (parada.data['Lat'] != null && parada.data['Lat'] != null) {
           double lat = double.parse(parada.data['Lat']);
           double long = double.parse(parada.data['Long']);
-          double dist = _calcularDistancia(
+          double dist = getDistanceBetween(
               _currentLocation.latitude, _currentLocation.longitude, lat, long);
 
-          if (dist < 0.005) {
-            print(dist);
-
+          if (dist <= DISTANCE_SEARCH_SOPTS) {
             _markers.add(Marker(
-              // This marker id can be anything that uniquely identifies each marker.
               markerId: MarkerId("${parada.data['CodigoParada']}"),
               position: LatLng(lat, long),
               infoWindow: InfoWindow(
@@ -230,10 +215,6 @@ class _MyHomePageState extends State<MyHomePage> {
     });
 
     return _markers;
-  }
-
-  _calcularDistancia(double lat1, double long1, double lat2, double long2) {
-    return sqrt(pow(lat1 - lat2, 2) + pow(long1 - long2, 2));
   }
 
 //  _montarLinhas() {

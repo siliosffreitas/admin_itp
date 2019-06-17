@@ -1,3 +1,5 @@
+import 'package:latlong/latlong.dart' as latlong;
+
 final defaultDiacriticsRemovalap = [
   {
     'base': 'A',
@@ -261,4 +263,14 @@ String removeDiacritics(String str) {
         ? diacriticsMap[a.group(0)]
         : a.group(0);
   }).toLowerCase();
+}
+
+double getDistanceBetween(
+    double lat1, double long1, double lat2, double long2) {
+  final latlong.Distance distance = new latlong.Distance();
+
+  final double meter = distance(
+      new latlong.LatLng(lat1, long1), new latlong.LatLng(lat2, long2));
+
+  return meter;
 }
