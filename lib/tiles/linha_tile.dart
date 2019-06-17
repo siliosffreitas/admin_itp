@@ -34,16 +34,11 @@ class LinhaTile extends StatelessWidget {
           }),
       onTap: () {
         Map<String, dynamic> l = _linha.cast<String, dynamic>();
-        print(l);
-        _rastreamentoBloc.adicionarLinha(l);
 
+        _rastreamentoBloc.adicionarLinha(l);
+        Navigator.popUntil(
+            context, ModalRoute.withName(Navigator.defaultRouteName));
       },
-//      onTap: interable
-//          ? () {
-//              Navigator.of(context).push(MaterialPageRoute(
-//                  builder: (context) => DetailClientScreen(snapshot)));
-//            }
-//          : null,
     );
   }
 }
