@@ -310,25 +310,23 @@ class _MyHomePageState extends State<MyHomePage> {
   _determinarCor(int cor) {
     switch (cor) {
       case 0:
-        return Colors.redAccent;
-      case 1:
-        return Colors.green;
-      case 2:
         return Colors.blueAccent;
+      case 1:
+        return Colors.redAccent;
+      case 2:
+        return Colors.lightGreenAccent;
       case 3:
-        return Colors.purpleAccent;
+        return Colors.yellowAccent;
       case 4:
         return Colors.orange;
       case 5:
-        return Colors.black12;
+        return Colors.green;
       case 6:
-        return Colors.amberAccent;
+        return Colors.brown;
       case 7:
         return Colors.cyanAccent;
       case 8:
         return Colors.lightGreenAccent;
-      case 9:
-        return Colors.pinkAccent;
       default:
         return Colors.grey;
     }
