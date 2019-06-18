@@ -57,9 +57,9 @@ class _LinhasScreenState extends State<LinhasScreen> {
               if (_query != null && _query.trim().isNotEmpty) {
                 // filtra localmente
                 var documents = snapshot.data.where((snapshot) => snapshot
-                    .data['CodigoLinha']
+                    .data['CodigoLinha'].toLowerCase()
                     .toString()
-                    .contains(removeDiacritics(_query)));
+                    .contains(removeDiacritics(_query.toLowerCase())));
 
                 if (documents == null || documents.isEmpty) {
                   return NadaEncontradoNaPesquisa(query: _query);

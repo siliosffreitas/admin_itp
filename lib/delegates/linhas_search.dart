@@ -49,8 +49,8 @@ class LinhasSearch extends SearchDelegate<String> {
             // tudo e filtrar localmente
             var documents = snapshot.data.where((snapshot) => snapshot
                 .data['CodigoLinha']
-                .toString()
-                .contains(removeDiacritics(query)));
+                .toString().toLowerCase()
+                .contains(removeDiacritics(query.toLowerCase())));
 
             return ListView.builder(
                 itemCount: documents.length,
