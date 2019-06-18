@@ -39,6 +39,8 @@ class _MyHomePageState extends State<MyHomePage> {
     zoom: 11,
   );
   CameraPosition _currentCameraPosition;
+
+//  CameraTargetBounds _cameraTargetBounds;
   String error;
 
   @override
@@ -76,6 +78,9 @@ class _MyHomePageState extends State<MyHomePage> {
           _locationSubscription = _locationService
               .onLocationChanged()
               .listen((LocationData result) async {
+            if (_currentCameraPosition != null) {
+              return;
+            }
             _currentCameraPosition = CameraPosition(
                 target: LatLng(result.latitude, result.longitude), zoom: 16);
 
@@ -120,22 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _mapController = controller;
     });
-
-//    _mapController.onInfoWindowTapped.add((Marker marker) {
-//      for (var stop in _nextsStops) {
-//        if (marker.options.infoWindowText.title == _titleInfowindow(stop)) {
-//          Navigator.of(context).push(MaterialPageRoute(
-//              builder: (BuildContext context) => StopScreen(stop)));
-//          break;
-//        }
-//      }
-//    });
   }
-
-//  _desenharItinerarios() {
-//    Set<Polyline> _polylines = Set();
-//    return _polylines;
-//  }
 
   @override
   Widget build(BuildContext context) {
@@ -170,6 +160,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: <Widget>[
                   Container(
                     child: GoogleMap(
+//                      cameraTargetBounds: _cameraTargetBounds,
                       polylines: _itinerariosPolyline,
 //              compassEnabled: false,
                       myLocationButtonEnabled: false,
@@ -252,7 +243,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _extrairItinerariosParaPolylines(
-      List<Map<String, dynamic>> linhasRastreadas) {
+      List<Map<String, dynamic>> linhasRastreadas) async {
     Set<Polyline> polylines = {};
     linhasRastreadas.forEach((linha) {
       if (linha['Itinerarios'] != null && linha['Itinerarios'].isNotEmpty) {
@@ -269,7 +260,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 //        setState(() {
         polylines.add(Polyline(
-          width: 2,
+            width: 2,
             polylineId: PolylineId(linha['CodigoLinha']),
             color: _determinarCor(linha['cor']),
             points: coords));
@@ -277,7 +268,43 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     });
 
-        _itinerariosPolyline = polylines;
+    _itinerariosPolyline = polylines;
+
+//    LatLng northeast = LatLng(-180, 0);
+//    LatLng southwest = LatLng(180, 0);
+
+    double latNortheast = -90;
+    double latSouthwest = 90;
+    double longEastest = -180;
+    double longWestest = 180;
+
+    _itinerariosPolyline.forEach((polyline) {
+      polyline.points.forEach((ponto) {
+        if (ponto.latitude > latNortheast) {
+          latNortheast = ponto.latitude;
+        }
+
+        if (ponto.latitude < latSouthwest) {
+          latSouthwest = ponto.latitude;
+        }
+
+        if (ponto.longitude > longEastest) {
+          longEastest = ponto.longitude;
+        }
+
+        if (ponto.longitude < longWestest) {
+          longWestest = ponto.longitude;
+        }
+      });
+    });
+
+    LatLng northeast = LatLng(latNortheast, longWestest);
+    LatLng southwest = LatLng(latSouthwest, longEastest);
+//    print("northeast: ${northeast}, southwest: ${southwest}");
+
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(CameraUpdate.newLatLngBounds(
+        LatLngBounds(northeast: northeast, southwest: southwest), 30));
   }
 
   _determinarCor(int cor) {
@@ -315,6 +342,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Set<Marker> _markers = Set();
 
     paradas.forEach((parada) {
+//      _cameraTargetBounds = CameraTargetBounds(LatLngBounds(southwest: null, northeast: null))
       if (_currentLocation != null) {
         if (parada.data['Lat'] != null && parada.data['Lat'] != null) {
           double lat = double.parse(parada.data['Lat']);
