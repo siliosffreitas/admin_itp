@@ -187,30 +187,35 @@ class _MyHomePageState extends State<MyHomePage> {
 
                         _extrairItinerariosParaPolylines(snapshot.data);
 
-                        return Container(
-                          height: 60,
-                          color: Colors.white,
-                          child: ListView(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            scrollDirection: Axis.horizontal,
-                            children: snapshot.data.map((linha) {
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 4),
-                                child: Chip(
-                                  avatar: Icon(
-                                    Icons.directions_bus,
-                                    color: _determinarCor(linha['cor']),
+                        return Card(
+                          elevation: 10,
+                          margin: EdgeInsets.all(0),
+                          color: Color.fromRGBO(250, 250, 250, 0.9),
+                          child: Container(
+                            height: 60,
+                            child: ListView(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 12),
+                              scrollDirection: Axis.horizontal,
+                              children: snapshot.data.map((linha) {
+                                return Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 4),
+                                  child: Chip(
+                                    avatar: Icon(
+                                      Icons.directions_bus,
+                                      color: _determinarCor(linha['cor']),
+                                    ),
+                                    label: Text(linha['CodigoLinha']),
+                                    deleteIcon: Icon(Icons.close),
+                                    onDeleted: () {
+                                      _rastreamentoBloc
+                                          .removerLinha(linha['CodigoLinha']);
+                                    },
                                   ),
-                                  label: Text(linha['CodigoLinha']),
-                                  deleteIcon: Icon(Icons.close),
-                                  onDeleted: () {
-                                    _rastreamentoBloc
-                                        .removerLinha(linha['CodigoLinha']);
-                                  },
-                                ),
-                              );
-                            }).toList(),
+                                );
+                              }).toList(),
+                            ),
                           ),
                         );
                       })
@@ -304,7 +309,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(CameraUpdate.newLatLngBounds(
-        LatLngBounds(northeast: northeast, southwest: southwest), 30));
+        LatLngBounds(northeast: northeast, southwest: southwest), 60));
   }
 
   _determinarCor(int cor) {
