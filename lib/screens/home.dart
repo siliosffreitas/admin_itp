@@ -26,6 +26,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   GoogleMapController _mapController;
 
+  Set<Polyline> _itinerariosPolyline = {};
+
   LocationData _startLocation;
   LocationData _currentLocation;
   bool _permission = false;
@@ -83,8 +85,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
             if (mounted) {
               setState(() {
-                _currentLocation = result;
-                print(_currentLocation);
+                if (_currentLocation == null) {
+                  _currentLocation = result;
+                  print(_currentLocation);
+                }
               });
             }
           });
@@ -128,6 +132,11 @@ class _MyHomePageState extends State<MyHomePage> {
 //    });
   }
 
+//  _desenharItinerarios() {
+//    Set<Polyline> _polylines = Set();
+//    return _polylines;
+//  }
+
   @override
   Widget build(BuildContext context) {
     final _paradasBloc = BlocProvider.of<ParadasBloc>(context);
@@ -161,6 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: <Widget>[
                   Container(
                     child: GoogleMap(
+                      polylines: _itinerariosPolyline,
 //              compassEnabled: false,
                       myLocationButtonEnabled: false,
                       onMapCreated: _onMapCreated,
@@ -183,6 +193,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         if (!snapshot.hasData || snapshot.data.isEmpty) {
                           return Container();
                         }
+
+                        _extrairItinerariosParaPolylines(snapshot.data);
 
                         return Container(
                           height: 60,
@@ -237,6 +249,35 @@ class _MyHomePageState extends State<MyHomePage> {
 //        )
 // This trailing comma makes auto-formatting nicer for build methods.
         );
+  }
+
+  _extrairItinerariosParaPolylines(
+      List<Map<String, dynamic>> linhasRastreadas) {
+    Set<Polyline> polylines = {};
+    linhasRastreadas.forEach((linha) {
+      if (linha['Itinerarios'] != null && linha['Itinerarios'].isNotEmpty) {
+//        print(linha['Itinerarios'][0]['Caminho']);
+        List<String> coordsStr = linha['Itinerarios'][0]['Caminho'].split("\ ");
+        List<LatLng> coords = [];
+        coordsStr.forEach((coordsStr) {
+//          print("#${coordsStr}#");
+          double lat = double.parse(coordsStr.split("\,")[0]);
+          double long = double.parse(coordsStr.split("\,")[1]);
+          LatLng latLng = LatLng(lat, long);
+          coords.add(latLng);
+        });
+
+//        setState(() {
+        polylines.add(Polyline(
+          width: 2,
+            polylineId: PolylineId(linha['CodigoLinha']),
+            color: _determinarCor(linha['cor']),
+            points: coords));
+//        });
+      }
+    });
+
+        _itinerariosPolyline = polylines;
   }
 
   _determinarCor(int cor) {

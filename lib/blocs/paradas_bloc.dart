@@ -22,7 +22,7 @@ class ParadasBloc implements BlocBase {
         .snapshots()
         .listen((snapshot) {
       _paradas = snapshot.documents;
-      print(_paradas.length);
+//      print(_paradas.length);
       _paradasController.sink.add(_paradas);
 
     });

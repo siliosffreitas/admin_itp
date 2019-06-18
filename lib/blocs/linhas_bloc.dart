@@ -22,7 +22,7 @@ class LinhasBloc implements BlocBase {
         .snapshots()
         .listen((snapshot) {
       _linhas = snapshot.documents;
-      print(_linhas.length);
+//      print(_linhas.length);
       _linhasController.sink.add(_linhas);
 
     });

@@ -13,6 +13,7 @@ class RastreamentoBloc implements BlocBase {
       _linhasRastreadasController.stream;
 
   adicionarLinha(Map<String, dynamic> linha) {
+    print("adicionarLinha");
     if (_procuraLinha(linha['CodigoLinha']) == -1) {
       if (linha.length < MAX_LINE) {
         linha['cor'] = _procuraPrimeiraCorDisponivel();
@@ -32,18 +33,19 @@ class RastreamentoBloc implements BlocBase {
         .orderBy('NomeItinerario', descending: false)
         .snapshots()
         .listen((snapshot) {
-
       int position = _procuraLinha(idLinha);
-      _linhasRastreadas.elementAt(position)['Caminhos'] = snapshot;
+
+      List itinerarios = [];
+      snapshot.documents.forEach((it) {
+        itinerarios.add(it.data);
+//        print(it.data);
+      });
+
+//      print("AA: ${idLinha} :: ${itinerarios}");
+      _linhasRastreadas.elementAt(position)['Itinerarios'] = itinerarios;
       _linhasRastreadasController.add(_linhasRastreadas);
 
-//      print(snapshot.documents.);
-      snapshot.documents.forEach((it){
-        print(it.data);
-      });
-//      _linhas = snapshot.documents;
-//      print(_linhas.length);
-//      _linhasController.sink.add(_linhas);
+
     });
   }
 
