@@ -36,7 +36,6 @@ class LinhaRastreadaTile extends StatelessWidget {
       backgroundColor: Colors.white,
       label: GestureDetector(
           onTap: () {
-            print(linha['Itinerarios'].length);
             showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -45,9 +44,11 @@ class LinhaRastreadaTile extends StatelessWidget {
                     children: linha['Itinerarios'].map<Widget>((itinerario) {
                       String nomeCompleto = itinerario['NomeItinerario'];
                       List<String> dados = nomeCompleto.split("\_");
-                      print(itinerario['selecionado']);
                       return ListTile(
-                        onTap: () {},
+                        onTap: () {
+                          _rastreamentoBloc.visualizarItinerario(linha['CodigoLinha'], nomeCompleto);
+                          Navigator.pop(context);
+                        },
                         leading: Checkbox(
                           value: itinerario['selecionado'],
                         ),

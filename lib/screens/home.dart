@@ -288,8 +288,11 @@ class _MyHomePageState extends State<MyHomePage> {
     if (linhasRastreadas != null) {
       linhasRastreadas.forEach((linha) {
         if (linha['Itinerarios'] != null && linha['Itinerarios'].isNotEmpty) {
-          List<String> coordsStr =
-              linha['Itinerarios'][0]['Caminho'].split("\ ");
+          Map<String, dynamic> itinerarioSelecionado = linha['Itinerarios']
+              .where((it) => it['selecionado'] == true)
+              .elementAt(0);
+
+          List<String> coordsStr = itinerarioSelecionado['Caminho'].split("\ ");
           List<LatLng> coords = [];
           coordsStr.forEach((coordsStr) {
             double lat = double.parse(coordsStr.split("\,")[0]);
@@ -427,8 +430,6 @@ class _MyHomePageState extends State<MyHomePage> {
         print(linha['cor']);
         if (linha['Veiculos'] != null) {
           linha['Veiculos'].forEach((veiculo) {
-
-
             double lat = double.parse(veiculo.data['Lat']);
             double long = double.parse(veiculo.data['Long']);
             LatLng actualPosition = LatLng(lat, long);
@@ -462,9 +463,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
               LatLng lastPosition = LatLng(lastLat, lastLong);
 
-
-
-
               _markers.add(Marker(
                 flat: true,
                 rotation: calcularAngulo(actualPosition, lastPosition),
@@ -495,8 +493,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return _markers;
   }
-
-
 
 //  _montarLinhas() {
 //    List<Map<String, dynamic>> _linhas = linhas;

@@ -13,7 +13,6 @@ class RastreamentoBloc implements BlocBase {
       _linhasRastreadasController.stream;
 
   adicionarLinha(Map<String, dynamic> linha) {
-    print("adicionarLinha");
     if (_procuraLinha(linha['CodigoLinha']) == -1) {
       if (_linhasRastreadas.length < MAX_LINE) {
         linha['cor'] = _procuraPrimeiraCorDisponivel();
@@ -41,6 +40,18 @@ class RastreamentoBloc implements BlocBase {
         _linhasRastreadasController.add(_linhasRastreadas);
       });
     });
+  }
+
+  visualizarItinerario(String idLinha, String nome){
+    Map<String, dynamic> linha = _linhasRastreadas.where((l) => l['CodigoLinha'] == idLinha).elementAt(0);
+    linha['Itinerarios'].forEach((it){
+      if(it['NomeItinerario'] == nome){
+        it['selecionado'] = true;
+      } else {
+        it['selecionado'] = false;
+      }
+    });
+    _linhasRastreadasController.add(_linhasRastreadas);
   }
 
   _recuperarItinerarios(String idLinha) {
