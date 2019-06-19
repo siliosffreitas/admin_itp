@@ -371,7 +371,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       final GoogleMapController controller = await _controller.future;
       controller.animateCamera(CameraUpdate.newLatLngBounds(
-          LatLngBounds(northeast: northeast, southwest: southwest), 60));
+          LatLngBounds(northeast: northeast, southwest: southwest), 30));
     }
   }
 
