@@ -270,7 +270,7 @@ class _MyHomePageState extends State<MyHomePage> {
           });
 
           polylines.add(Polyline(
-                  width: 2,
+                  width: 3,
                   polylineId: PolylineId(linha['CodigoLinha']),
                   color: _determinarCor(linha['cor']),
                   points: coords)
@@ -321,25 +321,25 @@ class _MyHomePageState extends State<MyHomePage> {
   _determinarCor(int cor) {
     switch (cor) {
       case 0:
-        return Colors.blueAccent;
+        return Color.fromRGBO(41, 113, 219, 1);
       case 1:
-        return Colors.redAccent;
+        return Color.fromRGBO(208, 1, 27, 1);
       case 2:
-        return Colors.lightGreenAccent;
+        return Color.fromRGBO(126, 211, 33, 1);
       case 3:
-        return Colors.yellowAccent;
+        return Color.fromRGBO(248, 232, 28, 1);
       case 4:
-        return Colors.orange;
+        return Color.fromRGBO(246, 166, 35, 1);
       case 5:
-        return Colors.green;
+        return Color.fromRGBO(65, 117, 5, 1);
       case 6:
-        return Colors.brown;
+        return Color.fromRGBO(139, 87, 42, 1);
       case 7:
-        return Colors.cyanAccent;
+        return Color.fromRGBO(144, 18, 254, 1);
       case 8:
-        return Colors.lightGreenAccent;
+        return Color.fromRGBO(80, 227, 194, 1);
       default:
-        return Colors.grey;
+        return Color.fromRGBO(155, 155, 155, 1);
     }
   }
 
