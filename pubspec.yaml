@@ -53,7 +53,49 @@ flutter:
   #  - images/a_dot_ham.jpeg
   assets:
    - assets/android/stopbus_green.png
+   - assets/android/bus_mark_line_1.png
+   - assets/android/bus_mark_line_2.png
+   - assets/android/bus_mark_line_3.png
+   - assets/android/bus_mark_line_4.png
+   - assets/android/bus_mark_line_5.png
+   - assets/android/bus_mark_line_6.png
+   - assets/android/bus_mark_line_7.png
+   - assets/android/bus_mark_line_8.png
+   - assets/android/bus_mark_line_9.png
+   - assets/android/bus_mark_line_10.png
+   - assets/android/arrow_line_1.png
+   - assets/android/arrow_line_2.png
+   - assets/android/arrow_line_3.png
+   - assets/android/arrow_line_4.png
+   - assets/android/arrow_line_5.png
+   - assets/android/arrow_line_6.png
+   - assets/android/arrow_line_7.png
+   - assets/android/arrow_line_8.png
+   - assets/android/arrow_line_9.png
+   - assets/android/arrow_line_10.png
    - assets/ios/stopbus_green.png
+   - assets/ios/bus_mark_line_1.png
+   - assets/ios/bus_mark_line_2.png
+   - assets/ios/bus_mark_line_3.png
+   - assets/ios/bus_mark_line_4.png
+   - assets/ios/bus_mark_line_5.png
+   - assets/ios/bus_mark_line_6.png
+   - assets/ios/bus_mark_line_7.png
+   - assets/ios/bus_mark_line_8.png
+   - assets/ios/bus_mark_line_9.png
+   - assets/ios/bus_mark_line_10.png
+   - assets/ios/arrow_line_1.png
+   - assets/ios/arrow_line_2.png
+   - assets/ios/arrow_line_3.png
+   - assets/ios/arrow_line_4.png
+   - assets/ios/arrow_line_5.png
+   - assets/ios/arrow_line_6.png
+   - assets/ios/arrow_line_7.png
+   - assets/ios/arrow_line_8.png
+   - assets/ios/arrow_line_9.png
+   - assets/ios/arrow_line_10.png
+
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
