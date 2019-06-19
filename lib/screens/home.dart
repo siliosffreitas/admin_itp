@@ -176,8 +176,9 @@ class _MyHomePageState extends State<MyHomePage> {
 //            },
 //            initialCameraPosition: _currentCameraPosition,
                             initialCameraPosition: _initialCamera,
-                            markers:
-                                _desenharParadasProximas(snapshotParadas.data),
+                            markers: _desenharMarcadores(snapshotParadas.data,
+                                linhasRastreadas:
+                                    linhasRastreadasSnapshot.data),
 //            markers: _createMarker(_latLng),
 //              initialCameraPosition: CameraPosition(
 //                target: LatLng(-5.082618, -42.790596),
@@ -375,13 +376,19 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  String _titleInfowindow(Map<String, dynamic> parada) {
+  String _titleInfowindowParada(Map<String, dynamic> parada) {
     return 'Parada ${parada['CodigoParada']} • ${parada['Denomicao']}';
   }
 
-  Set<Marker> _desenharParadasProximas(List<DocumentSnapshot> paradas) {
+  String _titleInfowindowOnibus(Map<String, dynamic> veiculo) {
+    return 'Veículo ${veiculo['CodigoVeiculo']}';
+  }
+
+  Set<Marker> _desenharMarcadores(List<DocumentSnapshot> paradas,
+      {List linhasRastreadas}) {
     Set<Marker> _markers = Set();
 
+    // desenhando as paradas
     paradas.forEach((parada) {
 //      _cameraTargetBounds = CameraTargetBounds(LatLngBounds(southwest: null, northeast: null))
       if (_currentLocation != null) {
@@ -393,10 +400,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
           if (dist <= DISTANCE_SEARCH_SOPTS) {
             _markers.add(Marker(
-              markerId: MarkerId("${parada.data['CodigoParada']}"),
+              markerId: MarkerId("parada.${parada.data['CodigoParada']}"),
               position: LatLng(lat, long),
               infoWindow: InfoWindow(
-                  title: _titleInfowindow(parada.data),
+                  title: _titleInfowindowParada(parada.data),
                   snippet: '${parada.data['Endereco']}',
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -413,6 +420,39 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       }
     });
+
+    // desenhando os ônibus
+    if (linhasRastreadas != null) {
+      linhasRastreadas.forEach((linha) {
+        print(linha['cor']);
+        if (linha['Veiculos'] != null) {
+          linha['Veiculos'].forEach((veiculo) {
+            double lat = double.parse(veiculo.data['Lat']);
+            double long = double.parse(veiculo.data['Long']);
+
+            _markers.add(Marker(
+              anchor: Offset(0.5, 0.5),
+              markerId: MarkerId("veiculo.${veiculo.data['CodigoVeiculo']}"),
+              position: LatLng(lat, long),
+              infoWindow: InfoWindow(
+                  title: _titleInfowindowOnibus(veiculo.data),
+                  snippet: 'Atualizado em ${veiculo.data['UltimaAtualizacao']}',
+                  onTap: () {
+//                    Navigator.of(context).push(MaterialPageRoute(
+//                        builder: (context) => DetalhesParadaScreen(
+//                          codigoParada: parada.data['UltimaAtualizacao'],
+//                        )));
+                  }),
+              icon: Theme.of(context).platform == TargetPlatform.iOS
+                  ? BitmapDescriptor.fromAsset(
+                      "assets/ios/bus_mark_line_${linha['cor'] + 1}.png")
+                  : BitmapDescriptor.fromAsset(
+                      "assets/android/bus_mark_line_${linha['cor']}.png"),
+            ));
+          });
+        }
+      });
+    }
 
     return _markers;
   }

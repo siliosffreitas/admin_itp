@@ -28,28 +28,15 @@ class RastreamentoBloc implements BlocBase {
 
   _recuperarVeiculos() {
     _linhasRastreadas.forEach((linha) {
-//      print(linha);
       String data = "20190619";
 
       Firestore.instance
           .collection("rastreamento/$data/${linha['CodigoLinha']}")
-//          .where("data", isEqualTo: "20190616")
-//          .where("data", isEqualTo: "20190616")
           .orderBy('CodigoVeiculo', descending: false)
           .snapshots()
           .listen((snapshot) {
         print('encontrou veiculo(s) ${snapshot.documents}');
 
-//        int position = _procuraLinha(idLinha);
-
-//        List itinerarios = [];
-//        snapshot.documents.forEach((it) {
-//          itinerarios.add(it.data);
-////        print(it.data);
-//        });
-
-//      print("AA: ${idLinha} :: ${itinerarios}");
-//        _linhasRastreadas.elementAt(position)['Itinerarios'] = itinerarios;
         linha['Veiculos'] = snapshot.documents;
         _linhasRastreadasController.add(_linhasRastreadas);
       });

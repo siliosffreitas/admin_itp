@@ -27,7 +27,7 @@ class LinhaRastreadaTile extends StatelessWidget {
             ),
             padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
             child: Text(
-              "${0}",
+              "${linha['Veiculos'].length}",
               style: TextStyle(color: Colors.white, fontSize: 10),
             ),
           )
