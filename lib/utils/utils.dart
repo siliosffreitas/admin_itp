@@ -1,5 +1,7 @@
+import 'dart:math';
 import 'dart:ui';
 
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:latlong/latlong.dart' as latlong;
 
 final defaultDiacriticsRemovalap = [
@@ -302,3 +304,12 @@ determinarCorLinhaRastreada(int cor) {
   }
 }
 
+double calcularAngulo(LatLng A, LatLng B) {
+  double tangente = (A.latitude - B.latitude) / (A.longitude - B.longitude);
+  double anguloRad = atan(tangente);
+
+  double anguloDec = anguloRad * 180 / pi;
+  print(anguloDec);
+
+  return 90 - anguloDec;
+}

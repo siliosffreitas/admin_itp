@@ -427,13 +427,17 @@ class _MyHomePageState extends State<MyHomePage> {
         print(linha['cor']);
         if (linha['Veiculos'] != null) {
           linha['Veiculos'].forEach((veiculo) {
+
+
             double lat = double.parse(veiculo.data['Lat']);
             double long = double.parse(veiculo.data['Long']);
+            LatLng actualPosition = LatLng(lat, long);
 
+            // icone do onibus
             _markers.add(Marker(
               anchor: Offset(0.5, 0.5),
               markerId: MarkerId("veiculo.${veiculo.data['CodigoVeiculo']}"),
-              position: LatLng(lat, long),
+              position: actualPosition,
               infoWindow: InfoWindow(
                   title: _titleInfowindowOnibus(veiculo.data),
                   snippet: 'Atualizado em ${veiculo.data['UltimaAtualizacao']}',
@@ -447,8 +451,43 @@ class _MyHomePageState extends State<MyHomePage> {
                   ? BitmapDescriptor.fromAsset(
                       "assets/ios/bus_mark_line_${linha['cor'] + 1}.png")
                   : BitmapDescriptor.fromAsset(
-                      "assets/android/bus_mark_line_${linha['cor']}.png"),
+                      "assets/android/bus_mark_line_${linha['cor'] + 1}.png"),
             ));
+
+            if (veiculo.data['LastLat'] != null &&
+                veiculo.data['LastLong'] != null) {
+              // icone da seta
+              double lastLat = double.parse(veiculo.data['LastLat']);
+              double lastLong = double.parse(veiculo.data['LastLong']);
+
+              LatLng lastPosition = LatLng(lastLat, lastLong);
+
+
+
+
+              _markers.add(Marker(
+                flat: true,
+                rotation: calcularAngulo(actualPosition, lastPosition),
+                anchor: Offset(0.5, 0.5),
+                markerId: MarkerId("seta.${veiculo.data['CodigoVeiculo']}"),
+                position: actualPosition,
+                infoWindow: InfoWindow(
+                    title: _titleInfowindowOnibus(veiculo.data),
+                    snippet:
+                        'Atualizado em ${veiculo.data['UltimaAtualizacao']}',
+                    onTap: () {
+//                    Navigator.of(context).push(MaterialPageRoute(
+//                        builder: (context) => DetalhesParadaScreen(
+//                          codigoParada: parada.data['UltimaAtualizacao'],
+//                        )));
+                    }),
+                icon: Theme.of(context).platform == TargetPlatform.iOS
+                    ? BitmapDescriptor.fromAsset(
+                        "assets/ios/arrow_line_${linha['cor'] + 1}.png")
+                    : BitmapDescriptor.fromAsset(
+                        "assets/android/arrow_line_${linha['cor'] + 1}.png"),
+              ));
+            }
           });
         }
       });
@@ -456,6 +495,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return _markers;
   }
+
+
 
 //  _montarLinhas() {
 //    List<Map<String, dynamic>> _linhas = linhas;
