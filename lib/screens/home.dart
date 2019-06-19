@@ -205,9 +205,9 @@ class _MyHomePageState extends State<MyHomePage> {
                               scrollDirection: Axis.horizontal,
                               children: snapshot.data.map((linha) {
                                 return Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 4),
-                                  child: LinhaRastreadaTile(linha: linha)
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 4),
+                                    child: LinhaRastreadaTile(linha: linha)
 
 //                                  Chip(
 //                                    elevation: 2,
@@ -246,7 +246,7 @@ class _MyHomePageState extends State<MyHomePage> {
 //                                          .removerLinha(linha['CodigoLinha']);
 //                                    },
 //                                  ),
-                                );
+                                    );
                               }).toList(),
                             ),
                           ),
@@ -305,47 +305,75 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       });
     }
-    _calcularBounds(polylines);
+    _calcularBounds(polylines: polylines);
     return polylines;
   }
 
-  _calcularBounds(Set<Polyline> polylines) async {
-
+  _calcularBounds({Set<Polyline> polylines, Set<Marker> paradas}) async {
     double latNortheast = -90;
     double latSouthwest = 90;
     double longEastest = -180;
     double longWestest = 180;
 
-    polylines.forEach((polyline) {
-      polyline.points.forEach((ponto) {
-        if (ponto.latitude > latNortheast) {
-          latNortheast = ponto.latitude;
+    if (polylines != null) {
+      polylines.forEach((polyline) {
+        polyline.points.forEach((ponto) {
+          if (ponto.latitude > latNortheast) {
+            latNortheast = ponto.latitude;
+          }
+
+          if (ponto.latitude < latSouthwest) {
+            latSouthwest = ponto.latitude;
+          }
+
+          if (ponto.longitude > longEastest) {
+            longEastest = ponto.longitude;
+          }
+
+          if (ponto.longitude < longWestest) {
+            longWestest = ponto.longitude;
+          }
+        });
+      });
+    }
+
+    if (paradas != null) {
+      paradas.forEach((parada) {
+        if (parada.position.latitude > latNortheast) {
+          latNortheast = parada.position.latitude;
         }
 
-        if (ponto.latitude < latSouthwest) {
-          latSouthwest = ponto.latitude;
+        if (parada.position.latitude < latSouthwest) {
+          latSouthwest = parada.position.latitude;
         }
 
-        if (ponto.longitude > longEastest) {
-          longEastest = ponto.longitude;
+        if (parada.position.longitude > longEastest) {
+          longEastest = parada.position.longitude;
         }
 
-        if (ponto.longitude < longWestest) {
-          longWestest = ponto.longitude;
+        if (parada.position.longitude < longWestest) {
+          longWestest = parada.position.longitude;
         }
       });
-    });
+    }
 
-    LatLng northeast = LatLng(latNortheast, longWestest);
-    LatLng southwest = LatLng(latSouthwest, longEastest);
+    if (latNortheast == -90 ||
+        latSouthwest == 90 ||
+        longEastest == -180 ||
+        longWestest == 180) {
+      final GoogleMapController controller = await _controller.future;
+      controller.animateCamera(
+          CameraUpdate.newCameraPosition(_currentCameraPosition));
+    } else {
+      LatLng northeast = LatLng(latNortheast, longWestest);
+      LatLng southwest = LatLng(latSouthwest, longEastest);
 //    print("northeast: ${northeast}, southwest: ${southwest}");
 
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newLatLngBounds(
-        LatLngBounds(northeast: northeast, southwest: southwest), 60));
+      final GoogleMapController controller = await _controller.future;
+      controller.animateCamera(CameraUpdate.newLatLngBounds(
+          LatLngBounds(northeast: northeast, southwest: southwest), 60));
+    }
   }
-
-
 
   String _titleInfowindow(Map<String, dynamic> parada) {
     return 'Parada ${parada['CodigoParada']} • ${parada['Denomicao']}';
