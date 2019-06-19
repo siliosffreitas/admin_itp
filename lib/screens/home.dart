@@ -26,8 +26,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   GoogleMapController _mapController;
 
-  Set<Polyline> _itinerariosPolyline = {};
-
   LocationData _startLocation;
   LocationData _currentLocation;
   bool _permission = false;
@@ -151,32 +149,41 @@ class _MyHomePageState extends State<MyHomePage> {
         drawer: CustomDrawer(),
         body: StreamBuilder<List<DocumentSnapshot>>(
             stream: _paradasBloc.outParadas,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
+            builder: (context, snapshotParadas) {
+              if (!snapshotParadas.hasData) {
                 return Center(child: CircularProgressIndicator());
               }
               return Stack(
                 alignment: Alignment(0, 1),
                 children: <Widget>[
                   Container(
-                    child: GoogleMap(
+                    child: StreamBuilder<List<Map<String, dynamic>>>(
+                        stream: _rastreamentoBloc.outLinhasRastreadas,
+                        builder: (context, linhasRastreadasSnapshot) {
+                          return GoogleMap(
 //                      cameraTargetBounds: _cameraTargetBounds,
-                      polylines: _itinerariosPolyline,
+
+//                      polylines: _itinerariosPolyline,
+                            polylines: _extrairItinerariosParaPolylines(
+                                linhasRastreadasSnapshot.data),
+
 //              compassEnabled: false,
-                      myLocationButtonEnabled: false,
-                      onMapCreated: _onMapCreated,
+                            myLocationButtonEnabled: false,
+                            onMapCreated: _onMapCreated,
 //            onMapCreated: (GoogleMapController controller) {
 //              _controller.complete(controller);
 //            },
 //            initialCameraPosition: _currentCameraPosition,
-                      initialCameraPosition: _initialCamera,
-                      markers: _desenharParadasProximas(snapshot.data),
+                            initialCameraPosition: _initialCamera,
+                            markers:
+                                _desenharParadasProximas(snapshotParadas.data),
 //            markers: _createMarker(_latLng),
 //              initialCameraPosition: CameraPosition(
 //                target: LatLng(-5.082618, -42.790596),
 //                zoom: 11,
 //              ),
-                    ),
+                          );
+                        }),
                   ),
                   StreamBuilder<List<Map<String, dynamic>>>(
                       stream: _rastreamentoBloc.outLinhasRastreadas,
@@ -184,8 +191,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         if (!snapshot.hasData || snapshot.data.isEmpty) {
                           return Container();
                         }
-
-                        _extrairItinerariosParaPolylines(snapshot.data);
 
                         return Card(
                           elevation: 10,
@@ -247,61 +252,62 @@ class _MyHomePageState extends State<MyHomePage> {
         );
   }
 
-  _extrairItinerariosParaPolylines(
-      List<Map<String, dynamic>> linhasRastreadas) async {
+  Set<Polyline> _extrairItinerariosParaPolylines(
+      List<Map<String, dynamic>> linhasRastreadas) {
     Set<Polyline> polylines = {};
-    linhasRastreadas.forEach((linha) {
-      if (linha['Itinerarios'] != null && linha['Itinerarios'].isNotEmpty) {
-//        print(linha['Itinerarios'][0]['Caminho']);
-        List<String> coordsStr = linha['Itinerarios'][0]['Caminho'].split("\ ");
-        List<LatLng> coords = [];
-        coordsStr.forEach((coordsStr) {
-//          print("#${coordsStr}#");
-          double lat = double.parse(coordsStr.split("\,")[0]);
-          double long = double.parse(coordsStr.split("\,")[1]);
-          LatLng latLng = LatLng(lat, long);
-          coords.add(latLng);
-        });
 
-//        setState(() {
-        polylines.add(Polyline(
-            width: 2,
-            polylineId: PolylineId(linha['CodigoLinha']),
-            color: _determinarCor(linha['cor']),
-            points: coords));
-//        });
-      }
-    });
+    if (linhasRastreadas != null) {
+      linhasRastreadas.forEach((linha) {
+        if (linha['Itinerarios'] != null && linha['Itinerarios'].isNotEmpty) {
+          List<String> coordsStr =
+              linha['Itinerarios'][0]['Caminho'].split("\ ");
+          List<LatLng> coords = [];
+          coordsStr.forEach((coordsStr) {
+            double lat = double.parse(coordsStr.split("\,")[0]);
+            double long = double.parse(coordsStr.split("\,")[1]);
+            LatLng latLng = LatLng(lat, long);
+            coords.add(latLng);
+          });
 
-    _itinerariosPolyline = polylines;
+          polylines.add(Polyline(
+                  width: 2,
+                  polylineId: PolylineId(linha['CodigoLinha']),
+                  color: _determinarCor(linha['cor']),
+                  points: coords)
 
-//    LatLng northeast = LatLng(-180, 0);
-//    LatLng southwest = LatLng(180, 0);
+              );
+        }
+      });
+    }
 
+    return polylines;
+  }
+
+  _calcularBounds() async {
     double latNortheast = -90;
     double latSouthwest = 90;
     double longEastest = -180;
     double longWestest = 180;
 
-    _itinerariosPolyline.forEach((polyline) {
-      polyline.points.forEach((ponto) {
-        if (ponto.latitude > latNortheast) {
-          latNortheast = ponto.latitude;
-        }
-
-        if (ponto.latitude < latSouthwest) {
-          latSouthwest = ponto.latitude;
-        }
-
-        if (ponto.longitude > longEastest) {
-          longEastest = ponto.longitude;
-        }
-
-        if (ponto.longitude < longWestest) {
-          longWestest = ponto.longitude;
-        }
-      });
-    });
+//    polylines.forEach((polyline) {
+//      polyline.points.forEach((ponto) {
+//        if (ponto.latitude > latNortheast) {
+//          latNortheast = ponto.latitude;
+//        }
+//
+//        if (ponto.latitude < latSouthwest) {
+//          latSouthwest = ponto.latitude;
+//        }
+//
+//        if (ponto.longitude > longEastest) {
+//          longEastest = ponto.longitude;
+//        }
+//
+//        if (ponto.longitude < longWestest) {
+//          longWestest = ponto.longitude;
+//        }
+//      });
+//    });
 
     LatLng northeast = LatLng(latNortheast, longWestest);
     LatLng southwest = LatLng(latSouthwest, longEastest);
