@@ -54,7 +54,13 @@ class RastreamentoBloc implements BlocBase {
 
       List itinerarios = [];
       snapshot.documents.forEach((it) {
-        itinerarios.add(it.data);
+        Map<String, dynamic> iter = it.data;
+        if(itinerarios.isEmpty){
+          iter['selecionado'] = true;
+        } else {
+          iter['selecionado'] = false;
+        }
+        itinerarios.add(iter);
 //        print(it.data);
       });
 

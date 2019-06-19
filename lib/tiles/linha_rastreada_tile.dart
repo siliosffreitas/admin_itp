@@ -27,14 +27,38 @@ class LinhaRastreadaTile extends StatelessWidget {
             ),
             padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
             child: Text(
-              "${linha['Veiculos'].length}",
+              "${linha['Veiculos'] == null ? 0 : linha['Veiculos'].length}",
               style: TextStyle(color: Colors.white, fontSize: 10),
             ),
           )
         ],
       ),
       backgroundColor: Colors.white,
-      label: Text(linha['CodigoLinha']),
+      label: GestureDetector(
+          onTap: () {
+            print(linha['Itinerarios'].length);
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return SimpleDialog(
+                    title: Text('Selecione o Itinerário'),
+                    children: linha['Itinerarios'].map<Widget>((itinerario) {
+                      String nomeCompleto = itinerario['NomeItinerario'];
+                      List<String> dados = nomeCompleto.split("\_");
+                      print(itinerario['selecionado']);
+                      return ListTile(
+                        onTap: () {},
+                        leading: Checkbox(
+                          value: itinerario['selecionado'],
+                        ),
+                        title: Text("${dados[0]} ${dados[3]}"),
+                        subtitle: Text("${dados[2]}"),
+                      );
+                    }).toList(),
+                  );
+                });
+          },
+          child: Text(linha['CodigoLinha'])),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(4))),
       deleteIcon: Icon(Icons.close),
