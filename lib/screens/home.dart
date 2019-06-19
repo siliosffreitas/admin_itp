@@ -305,35 +305,36 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       });
     }
-
+    _calcularBounds(polylines);
     return polylines;
   }
 
-  _calcularBounds() async {
+  _calcularBounds(Set<Polyline> polylines) async {
+
     double latNortheast = -90;
     double latSouthwest = 90;
     double longEastest = -180;
     double longWestest = 180;
 
-//    polylines.forEach((polyline) {
-//      polyline.points.forEach((ponto) {
-//        if (ponto.latitude > latNortheast) {
-//          latNortheast = ponto.latitude;
-//        }
-//
-//        if (ponto.latitude < latSouthwest) {
-//          latSouthwest = ponto.latitude;
-//        }
-//
-//        if (ponto.longitude > longEastest) {
-//          longEastest = ponto.longitude;
-//        }
-//
-//        if (ponto.longitude < longWestest) {
-//          longWestest = ponto.longitude;
-//        }
-//      });
-//    });
+    polylines.forEach((polyline) {
+      polyline.points.forEach((ponto) {
+        if (ponto.latitude > latNortheast) {
+          latNortheast = ponto.latitude;
+        }
+
+        if (ponto.latitude < latSouthwest) {
+          latSouthwest = ponto.latitude;
+        }
+
+        if (ponto.longitude > longEastest) {
+          longEastest = ponto.longitude;
+        }
+
+        if (ponto.longitude < longWestest) {
+          longWestest = ponto.longitude;
+        }
+      });
+    });
 
     LatLng northeast = LatLng(latNortheast, longWestest);
     LatLng southwest = LatLng(latSouthwest, longEastest);
