@@ -15,7 +15,7 @@ class RastreamentoBloc implements BlocBase {
   adicionarLinha(Map<String, dynamic> linha) {
     print("adicionarLinha");
     if (_procuraLinha(linha['CodigoLinha']) == -1) {
-      if (linha.length < MAX_LINE) {
+      if (_linhasRastreadas.length < MAX_LINE) {
         linha['cor'] = _procuraPrimeiraCorDisponivel();
         _linhasRastreadas.add(linha);
         _linhasRastreadasController.add(_linhasRastreadas);
