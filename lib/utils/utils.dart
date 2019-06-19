@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:latlong/latlong.dart' as latlong;
 
 final defaultDiacriticsRemovalap = [
@@ -274,3 +276,29 @@ double getDistanceBetween(
 
   return meter;
 }
+
+determinarCorLinhaRastreada(int cor) {
+  switch (cor) {
+    case 0:
+      return Color.fromRGBO(41, 113, 219, 1);
+    case 1:
+      return Color.fromRGBO(208, 1, 27, 1);
+    case 2:
+      return Color.fromRGBO(126, 211, 33, 1);
+    case 3:
+      return Color.fromRGBO(248, 232, 28, 1);
+    case 4:
+      return Color.fromRGBO(246, 166, 35, 1);
+    case 5:
+      return Color.fromRGBO(65, 117, 5, 1);
+    case 6:
+      return Color.fromRGBO(139, 87, 42, 1);
+    case 7:
+      return Color.fromRGBO(144, 18, 254, 1);
+    case 8:
+      return Color.fromRGBO(80, 227, 194, 1);
+    default:
+      return Color.fromRGBO(155, 155, 155, 1);
+  }
+}
+

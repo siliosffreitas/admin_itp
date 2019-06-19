@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:admin_itp/blocs/paradas_bloc.dart';
 import 'package:admin_itp/blocs/rastreamento_bloc.dart';
+import 'package:admin_itp/tiles/linha_rastreada_tile.dart';
 import 'package:admin_itp/utils/utils.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/services.dart';
@@ -206,18 +207,45 @@ class _MyHomePageState extends State<MyHomePage> {
                                 return Padding(
                                   padding:
                                       const EdgeInsets.symmetric(horizontal: 4),
-                                  child: Chip(
-                                    avatar: Icon(
-                                      Icons.directions_bus,
-                                      color: _determinarCor(linha['cor']),
-                                    ),
-                                    label: Text(linha['CodigoLinha']),
-                                    deleteIcon: Icon(Icons.close),
-                                    onDeleted: () {
-                                      _rastreamentoBloc
-                                          .removerLinha(linha['CodigoLinha']);
-                                    },
-                                  ),
+                                  child: LinhaRastreadaTile(linha: linha)
+
+//                                  Chip(
+//                                    elevation: 2,
+//                                    avatar: Stack(
+//                                      alignment: Alignment(2, -1.5),
+//                                      children: <Widget>[
+//                                        Icon(
+//                                          Icons.directions_bus,
+//                                          color: determinarCorLinhaRastreada(linha['cor']),
+//                                        ),
+//                                        Container(
+//                                          decoration: BoxDecoration(
+//                                            borderRadius: BorderRadius.all(
+//                                                Radius.circular(10)),
+//                                            color: Colors.redAccent,
+//                                          ),
+//                                          padding: EdgeInsets.symmetric(
+//                                              horizontal: 4, vertical: 2),
+//                                          child: Text(
+//                                            "${0}",
+//                                            style: TextStyle(
+//                                                color: Colors.white,
+//                                                fontSize: 10),
+//                                          ),
+//                                        )
+//                                      ],
+//                                    ),
+//                                    backgroundColor: Colors.white,
+//                                    label: Text(linha['CodigoLinha']),
+//                                    shape: RoundedRectangleBorder(
+//                                        borderRadius: BorderRadius.all(
+//                                            Radius.circular(4))),
+//                                    deleteIcon: Icon(Icons.close),
+//                                    onDeleted: () {
+//                                      _rastreamentoBloc
+//                                          .removerLinha(linha['CodigoLinha']);
+//                                    },
+//                                  ),
                                 );
                               }).toList(),
                             ),
@@ -270,12 +298,10 @@ class _MyHomePageState extends State<MyHomePage> {
           });
 
           polylines.add(Polyline(
-                  width: 3,
-                  polylineId: PolylineId(linha['CodigoLinha']),
-                  color: _determinarCor(linha['cor']),
-                  points: coords)
-
-              );
+              width: 3,
+              polylineId: PolylineId(linha['CodigoLinha']),
+              color: determinarCorLinhaRastreada(linha['cor']),
+              points: coords));
         }
       });
     }
@@ -318,30 +344,7 @@ class _MyHomePageState extends State<MyHomePage> {
         LatLngBounds(northeast: northeast, southwest: southwest), 60));
   }
 
-  _determinarCor(int cor) {
-    switch (cor) {
-      case 0:
-        return Color.fromRGBO(41, 113, 219, 1);
-      case 1:
-        return Color.fromRGBO(208, 1, 27, 1);
-      case 2:
-        return Color.fromRGBO(126, 211, 33, 1);
-      case 3:
-        return Color.fromRGBO(248, 232, 28, 1);
-      case 4:
-        return Color.fromRGBO(246, 166, 35, 1);
-      case 5:
-        return Color.fromRGBO(65, 117, 5, 1);
-      case 6:
-        return Color.fromRGBO(139, 87, 42, 1);
-      case 7:
-        return Color.fromRGBO(144, 18, 254, 1);
-      case 8:
-        return Color.fromRGBO(80, 227, 194, 1);
-      default:
-        return Color.fromRGBO(155, 155, 155, 1);
-    }
-  }
+
 
   String _titleInfowindow(Map<String, dynamic> parada) {
     return 'Parada ${parada['CodigoParada']} • ${parada['Denomicao']}';
