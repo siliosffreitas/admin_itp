@@ -309,7 +309,7 @@ double calcularAngulo(LatLng A, LatLng B) {
   double anguloRad = atan(tangente);
 
   double anguloDec = anguloRad * 180 / pi;
-  print(anguloDec);
+//  print(anguloDec);
 
   return 90 - anguloDec;
 }

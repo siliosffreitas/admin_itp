@@ -204,51 +204,27 @@ class _MyHomePageState extends State<MyHomePage> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 12),
                               scrollDirection: Axis.horizontal,
-                              children: snapshot.data.map((linha) {
-                                return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 4),
-                                    child: LinhaRastreadaTile(linha: linha)
-
-//                                  Chip(
-//                                    elevation: 2,
-//                                    avatar: Stack(
-//                                      alignment: Alignment(2, -1.5),
-//                                      children: <Widget>[
-//                                        Icon(
-//                                          Icons.directions_bus,
-//                                          color: determinarCorLinhaRastreada(linha['cor']),
-//                                        ),
-//                                        Container(
-//                                          decoration: BoxDecoration(
-//                                            borderRadius: BorderRadius.all(
-//                                                Radius.circular(10)),
-//                                            color: Colors.redAccent,
-//                                          ),
-//                                          padding: EdgeInsets.symmetric(
-//                                              horizontal: 4, vertical: 2),
-//                                          child: Text(
-//                                            "${0}",
-//                                            style: TextStyle(
-//                                                color: Colors.white,
-//                                                fontSize: 10),
-//                                          ),
-//                                        )
-//                                      ],
-//                                    ),
-//                                    backgroundColor: Colors.white,
-//                                    label: Text(linha['CodigoLinha']),
-//                                    shape: RoundedRectangleBorder(
-//                                        borderRadius: BorderRadius.all(
-//                                            Radius.circular(4))),
-//                                    deleteIcon: Icon(Icons.close),
-//                                    onDeleted: () {
-//                                      _rastreamentoBloc
-//                                          .removerLinha(linha['CodigoLinha']);
-//                                    },
-//                                  ),
-                                    );
-                              }).toList(),
+                              children: snapshot.data.map<Widget>((linha) {
+                                return LinhaRastreadaTile(linha: linha);
+                              }).toList()
+                                ..add(
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  LinhasScreen()));
+                                    },
+                                    child: Chip(
+                                        backgroundColor: Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(4))),
+                                        elevation: 2,
+                                        avatar: Icon(Icons.add),
+                                        label: Text("Adicionar Linha")),
+                                  ),
+                                ),
                             ),
                           ),
                         );
