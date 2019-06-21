@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:admin_itp/blocs/paradas_bloc.dart';
 import 'package:admin_itp/blocs/rastreamento_bloc.dart';
+import 'package:admin_itp/blocs/utils_bloc.dart';
 import 'package:admin_itp/tiles/linha_rastreada_tile.dart';
 import 'package:admin_itp/utils/utils.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
@@ -186,6 +187,33 @@ class _MyHomePageState extends State<MyHomePage> {
 //              ),
                           );
                         }),
+                  ),
+                  StreamBuilder<bool>(
+                    stream: BlocProvider.of<UtilsBloc>(context).outStransOnline,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Container();
+                      }
+                      if (snapshot.data) {
+                        return Container();
+                      }
+                      return Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: <Widget>[
+                            Container(
+                              height: 30,
+                              alignment: Alignment.center,
+                              color: Colors.redAccent,
+                              child: Text(
+                                "Strans Offline",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
                   StreamBuilder<List<Map<String, dynamic>>>(
                       stream: _rastreamentoBloc.outLinhasRastreadas,
