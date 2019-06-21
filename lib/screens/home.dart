@@ -199,7 +199,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           margin: EdgeInsets.all(0),
                           color: Color.fromRGBO(250, 250, 250, 0.9),
                           child: Container(
-                            height: 60,
+                            height: 50,
                             child: ListView(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 12),
@@ -215,14 +215,18 @@ class _MyHomePageState extends State<MyHomePage> {
                                               builder: (context) =>
                                                   LinhasScreen()));
                                     },
-                                    child: Chip(
-                                        backgroundColor: Colors.white,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(4))),
-                                        elevation: 2,
-                                        avatar: Icon(Icons.add),
-                                        label: Text("Adicionar Linha")),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 4),
+                                      child: Chip(
+                                          backgroundColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(4))),
+                                          elevation: 2,
+                                          avatar: Icon(Icons.add),
+                                          label: Text("Adicionar Linha")),
+                                    ),
                                   ),
                                 ),
                             ),
@@ -380,7 +384,6 @@ class _MyHomePageState extends State<MyHomePage> {
           if (dist <= DISTANCE_SEARCH_SOPTS) {
             _markers.add(Marker(
               markerId: MarkerId("parada.${parada.data['CodigoParada']}"),
-
               position: LatLng(lat, long),
               infoWindow: InfoWindow(
                   title: _titleInfowindowParada(parada.data),
