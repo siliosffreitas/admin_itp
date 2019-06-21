@@ -380,6 +380,7 @@ class _MyHomePageState extends State<MyHomePage> {
           if (dist <= DISTANCE_SEARCH_SOPTS) {
             _markers.add(Marker(
               markerId: MarkerId("parada.${parada.data['CodigoParada']}"),
+
               position: LatLng(lat, long),
               infoWindow: InfoWindow(
                   title: _titleInfowindowParada(parada.data),
@@ -403,12 +404,13 @@ class _MyHomePageState extends State<MyHomePage> {
     // desenhando os ônibus
     if (linhasRastreadas != null) {
       linhasRastreadas.forEach((linha) {
-        print(linha['cor']);
         if (linha['Veiculos'] != null) {
           linha['Veiculos'].forEach((veiculo) {
             double lat = double.parse(veiculo.data['Lat']);
             double long = double.parse(veiculo.data['Long']);
             LatLng actualPosition = LatLng(lat, long);
+
+//            print("assets/ios/bus_mark_line_${linha['cor'] + 1}.png");
 
             // icone do onibus
             _markers.add(Marker(
