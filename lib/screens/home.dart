@@ -188,13 +188,13 @@ class _MyHomePageState extends State<MyHomePage> {
                           );
                         }),
                   ),
-                  StreamBuilder<bool>(
-                    stream: BlocProvider.of<UtilsBloc>(context).outStransOnline,
+                  StreamBuilder<Map>(
+                    stream: BlocProvider.of<UtilsBloc>(context).outConfigs,
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
                         return Container();
                       }
-                      if (snapshot.data) {
+                      if (snapshot.data.isEmpty || snapshot.data['statusstrans'] == true) {
                         return Container();
                       }
                       return Container(

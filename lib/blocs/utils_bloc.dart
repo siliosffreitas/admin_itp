@@ -3,11 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
 
 class UtilsBloc implements BlocBase {
-  bool strans_online;
+  Map configs = {};
 
-  final _stransOnlineController = BehaviorSubject<bool>();
+  final _configsController = BehaviorSubject<Map>();
 
-  Stream<bool> get outStransOnline => _stransOnlineController.stream;
+  Stream<Map> get outConfigs => _configsController.stream;
 
   UtilsBloc() {
     _recuperarStatusStrans();
@@ -15,18 +15,16 @@ class UtilsBloc implements BlocBase {
 
   @override
   void dispose() {
-    _stransOnlineController.close();
+    _configsController.close();
   }
 
   _recuperarStatusStrans() {
-    Firestore.instance
-        .collection("utils")
-        .where("nome", isEqualTo: "statusstrans")
-        .snapshots()
-        .listen((snapshot) {
-      strans_online = snapshot.documents.elementAt(0).data['online'];
+    Firestore.instance.collection("utils").snapshots().listen((snapshot) {
+      snapshot.documents.forEach((field) {
+        configs[field['nome']] = field['valor'];
+      });
 
-      _stransOnlineController.add(strans_online);
+      _configsController.add(configs);
     });
   }
 }
