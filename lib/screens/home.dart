@@ -26,6 +26,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String veiculosAcessiveis = '';
+  String veiculosComAr = '';
+  String veiculosComWifi = '';
+
   GoogleMapController _mapController;
 
   LocationData _startLocation;
@@ -194,7 +198,12 @@ class _MyHomePageState extends State<MyHomePage> {
                       if (!snapshot.hasData) {
                         return Container();
                       }
-                      if (snapshot.data.isEmpty || snapshot.data['statusstrans'] == true) {
+                      veiculosAcessiveis = snapshot.data['veiculos_acessiveis'];
+                      veiculosComWifi = snapshot.data['veiculos_com_wifi'];
+                      veiculosComAr = snapshot.data['veiculos_com_ar_condicionado'];
+
+                      if (snapshot.data.isEmpty ||
+                          snapshot.data['statusstrans'] == true) {
                         return Container();
                       }
                       return Container(
@@ -392,7 +401,18 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   String _titleInfowindowOnibus(Map<String, dynamic> veiculo) {
-    return 'Veículo ${veiculo['CodigoVeiculo']}';
+    String title = 'Veículo ${veiculo['CodigoVeiculo']}';
+    if (veiculosAcessiveis.contains(veiculo['CodigoVeiculo'])) {
+      title += '♿';
+    }
+
+    if (veiculosComAr.contains(veiculo['CodigoVeiculo'])) {
+      title += '❄';
+    }
+    if (veiculosComWifi.contains(veiculo['CodigoVeiculo'])) {
+      title += '📶';
+    }
+    return title;
   }
 
   Set<Marker> _desenharMarcadores(List<DocumentSnapshot> paradas,
