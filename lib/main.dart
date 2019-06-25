@@ -1,15 +1,28 @@
 import 'package:admin_itp/blocs/paradas_bloc.dart';
 import 'package:admin_itp/screens/home.dart';
+import 'package:admin_itp/screens/login_screen.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'blocs/linhas_bloc.dart';
 import 'blocs/rastreamento_bloc.dart';
 import 'blocs/utils_bloc.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  runApp(MyApp(await _checkUserLoged()));
+}
+
+Future<bool> _checkUserLoged() async {
+  FirebaseUser _user = await FirebaseAuth.instance.currentUser();
+  return _user != null;
+}
 
 class MyApp extends StatelessWidget {
+  final bool logged;
+
+  const MyApp(this.logged);
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -35,7 +48,9 @@ class MyApp extends StatelessWidget {
                 // is not restarted.
                 primarySwatch: Colors.blue,
               ),
-              home: MyHomePage(title: 'Paradas próximas'),
+              home: !logged
+                  ? LoginScreen()
+                  : MyHomePage(title: 'Paradas próximas'),
             ),
           ),
         ),
