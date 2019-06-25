@@ -332,28 +332,28 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _calcularBounds({Set<Polyline> polylines, Set<Marker> paradas}) async {
-    double latNortheast = -90;
-    double latSouthwest = 90;
-    double longEastest = -180;
-    double longWestest = 180;
+    double northEast_lat = -90;
+    double southWest_lat = 90;
+    double northEast_long = -180;
+    double southWest_long = 180;
 
     if (polylines != null) {
       polylines.forEach((polyline) {
         polyline.points.forEach((ponto) {
-          if (ponto.latitude > latNortheast) {
-            latNortheast = ponto.latitude;
+          if (ponto.latitude > northEast_lat) {
+            northEast_lat = ponto.latitude;
           }
 
-          if (ponto.latitude < latSouthwest) {
-            latSouthwest = ponto.latitude;
+          if (ponto.latitude < southWest_lat) {
+            southWest_lat = ponto.latitude;
           }
 
-          if (ponto.longitude > longEastest) {
-            longEastest = ponto.longitude;
+          if (ponto.longitude > northEast_long) {
+            northEast_long = ponto.longitude;
           }
 
-          if (ponto.longitude < longWestest) {
-            longWestest = ponto.longitude;
+          if (ponto.longitude < southWest_long) {
+            southWest_long = ponto.longitude;
           }
         });
       });
@@ -361,34 +361,34 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (paradas != null) {
       paradas.forEach((parada) {
-        if (parada.position.latitude > latNortheast) {
-          latNortheast = parada.position.latitude;
+        if (parada.position.latitude > northEast_lat) {
+          northEast_lat = parada.position.latitude;
         }
 
-        if (parada.position.latitude < latSouthwest) {
-          latSouthwest = parada.position.latitude;
+        if (parada.position.latitude < southWest_lat) {
+          southWest_lat = parada.position.latitude;
         }
 
-        if (parada.position.longitude > longEastest) {
-          longEastest = parada.position.longitude;
+        if (parada.position.longitude > northEast_long) {
+          northEast_long = parada.position.longitude;
         }
 
-        if (parada.position.longitude < longWestest) {
-          longWestest = parada.position.longitude;
+        if (parada.position.longitude < southWest_long) {
+          southWest_long = parada.position.longitude;
         }
       });
     }
 
-    if (latNortheast == -90 ||
-        latSouthwest == 90 ||
-        longEastest == -180 ||
-        longWestest == 180) {
+    if (northEast_lat == -90 ||
+        southWest_lat == 90 ||
+        northEast_long == -180 ||
+        southWest_long == 180) {
       final GoogleMapController controller = await _controller.future;
       controller.animateCamera(
           CameraUpdate.newCameraPosition(_currentCameraPosition));
     } else {
-      LatLng northeast = LatLng(latNortheast, longWestest);
-      LatLng southwest = LatLng(latSouthwest, longEastest);
+      LatLng northeast = LatLng(northEast_lat, northEast_long);
+      LatLng southwest = LatLng(southWest_lat, southWest_long);
 //    print("northeast: ${northeast}, southwest: ${southwest}");
 
       final GoogleMapController controller = await _controller.future;
