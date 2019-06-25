@@ -24,14 +24,41 @@ class LinhasBloc implements BlocBase {
           .get()
           .then((userPrefs) {
         userPrefs.data['linhas_favoritas'].forEach((linhaFavorita) {
-//          print(linhaFavorita);
           _toogleLinhaComoFavorita(linhaFavorita);
         });
 
-        // ordenar linhas
+        _linhas.sort((a, b) {
+          int compare = 0;
+
+          if (a.data['favorita'] == null && b.data['favorita'] == null) {
+            compare = 0;
+          } else if (a.data['favorita'] == null && b.data['favorita'] != null) {
+            compare = 1;
+          } else if (a.data['favorita'] != null && b.data['favorita'] == null) {
+            compare = -1;
+          } else {
+            if (a.data['favorita'] == b.data['favorita']) {
+              compare = 0;
+            }
+            if (a.data['favorita']) {
+              compare = 1;
+            } else {
+              compare = -1;
+            }
+          }
+
+          if (compare == 0) {
+            return a.data['CodigoLinha'].compareTo(b.data['CodigoLinha']);
+          } else {
+            return compare;
+          }
+        });
+
+        _linhas.forEach((linha) {
+          print(linha.data);
+        });
+
         _linhasController.sink.add(_linhas);
-
-
       });
     }
   }
