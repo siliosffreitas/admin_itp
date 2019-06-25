@@ -200,7 +200,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       }
                       veiculosAcessiveis = snapshot.data['veiculos_acessiveis'];
                       veiculosComWifi = snapshot.data['veiculos_com_wifi'];
-                      veiculosComAr = snapshot.data['veiculos_com_ar_condicionado'];
+                      veiculosComAr =
+                          snapshot.data['veiculos_com_ar_condicionado'];
 
                       if (snapshot.data.isEmpty ||
                           snapshot.data['statusstrans'] == true) {
@@ -319,7 +320,7 @@ class _MyHomePageState extends State<MyHomePage> {
           });
 
           polylines.add(Polyline(
-              width: 3,
+              width: Theme.of(context).platform == TargetPlatform.iOS ? 3 : 7,
               polylineId: PolylineId(linha['CodigoLinha']),
               color: determinarCorLinhaRastreada(linha['cor']),
               points: coords));
