@@ -24,14 +24,24 @@ class LinhaTile extends StatelessWidget {
       ),
       title: Text(_linha["CodigoLinha"] ?? "-"),
       subtitle: _linha['Denomicao'] == null ? null : Text(_linha['Denomicao']),
-      trailing: IconButton(
-          icon: Icon(Icons.access_alarms),
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => HorariosLinhaScreen(
-                      codigoLinha: _linha["CodigoLinha"],
-                    )));
-          }),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          IconButton(
+              icon: Icon(Icons.access_alarms),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => HorariosLinhaScreen(
+                          codigoLinha: _linha["CodigoLinha"],
+                        )));
+              }),
+          IconButton(
+              icon: Icon(_linha['favorita'] == true
+                  ? Icons.favorite
+                  : Icons.favorite_border),
+              onPressed: () {}),
+        ],
+      ),
       onTap: () {
         Map<String, dynamic> l = _linha.cast<String, dynamic>();
 
