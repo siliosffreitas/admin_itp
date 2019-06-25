@@ -1,10 +1,13 @@
 import 'package:admin_itp/screens/paradas_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import 'administradores_screen.dart';
 import 'horarios_screen.dart';
 import 'itinerarios_screen.dart';
 import 'linhas_screen.dart';
+import 'login_screen.dart';
 
 class CustomDrawer extends StatefulWidget {
   @override
@@ -12,38 +15,36 @@ class CustomDrawer extends StatefulWidget {
 }
 
 class _CustomDrawerState extends State<CustomDrawer> {
-//  FirebaseUser _user;
+  FirebaseUser _user;
 
   @override
   Widget build(BuildContext context) {
-//    FirebaseAuth.instance.currentUser().then((user) {
-//      setState(() {
-//        _user = user;
-//      });
-//    });
+    FirebaseAuth.instance.currentUser().then((user) {
+      setState(() {
+        _user = user;
+      });
+    });
 
     DateTime now = DateTime.now();
     DateTime firstDateInActualMonth = DateTime(now.year, now.month);
 
     return Drawer(
-
       child: Column(
         children: <Widget>[
           Expanded(
             child: Column(
               children: <Widget>[
-//                _user == null
-//                    ? Container()
-//                    :
-                UserAccountsDrawerHeader(
-                        accountName: Text("Só admins"),
-                        accountEmail: Text("soadmin@email.com"),
-//                        currentAccountPicture: GestureDetector(
-//                          onTap: () => print('clicou na imagem de perfil'),
-//                          child: CircleAvatar(
-//                            backgroundImage: NetworkImage(_user.photoUrl),
-//                          ),
-//                        ),
+                _user == null
+                    ? Container()
+                    : UserAccountsDrawerHeader(
+                        accountName: Text(_user.displayName),
+                        accountEmail: Text(_user.email),
+                        currentAccountPicture: GestureDetector(
+                          onTap: () => print('clicou na imagem de perfil'),
+                          child: CircleAvatar(
+                            backgroundImage: NetworkImage(_user.photoUrl),
+                          ),
+                        ),
                       ),
                 Expanded(
                   child: Container(
@@ -128,7 +129,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   builder: (context) => LinhasScreen()));
                             },
                           ),
-
                           ListTile(
                             leading: Icon(Icons.access_alarms),
                             title: Text("Horários"),
@@ -138,17 +138,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   builder: (context) => HorariosScreen()));
                             },
                           ),
-
                           ListTile(
                             leading: Icon(Icons.assignment_ind),
                             title: Text("Administradores"),
                             onTap: () {
                               Navigator.of(context).pop();
                               Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => AdministradoresScreen()));
+                                  builder: (context) =>
+                                      AdministradoresScreen()));
                             },
                           ),
-
                           ListTile(
                             leading: Icon(Icons.assignment_ind),
                             title: Text("Itnerários"),
@@ -202,10 +201,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
   void _signOut() {
     Navigator.of(context).pop();
-//    FirebaseAuth.instance.signOut();
-//    GoogleSignIn().signOut();
-//
-//    Navigator.of(context).pushReplacement(
-//        MaterialPageRoute(builder: (context) => LoginScreen()));
+    FirebaseAuth.instance.signOut();
+    GoogleSignIn().signOut();
+
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => LoginScreen()));
   }
 }
