@@ -8,11 +8,17 @@ class LinhasBloc implements BlocBase {
   List<String> _linhasFavoritas = [];
 
   final _linhasController = BehaviorSubject<List<DocumentSnapshot>>();
+  final _linhasFavoritasController = BehaviorSubject<List<String>>();
 
   Stream<List<DocumentSnapshot>> get outLinhas => _linhasController.stream;
 
+  Stream<List<String>> get outLinhasFavoritas =>
+      _linhasFavoritasController.stream;
+
   LinhasBloc() {
+    print('linhas');
     _addLinhasListener();
+    _recuperarLinhasFavoritasDoUsuario();
   }
 
   _recuperarLinhasFavoritasDoUsuario() async {
@@ -24,29 +30,36 @@ class LinhasBloc implements BlocBase {
           .document(_user.email)
           .get()
           .then((userPrefs) {
-        userPrefs.data['linhas_favoritas'].forEach((linhaFavorita) {
-          toogleLinhaComoFavorita(linhaFavorita);
-        });
+        _linhasFavoritas = userPrefs.data['linhas_favoritas'].cast<String>();
+        print('_linhasFavoritas : ${_linhasFavoritas}');
+        _linhasFavoritasController.add(_linhasFavoritas);
       });
     }
   }
 
   toogleLinhaComoFavorita(String codigoLinha) async {
-    Map<String, dynamic> linha = _linhas
-        .where((l) => l.data['CodigoLinha'] == codigoLinha)
-        .elementAt(0)
-        .data;
-    if (linha['favorita']) {
-      linha['favorita'] = false;
-      _linhasFavoritas.remove(codigoLinha);
+//    Map<String, dynamic> linha = _linhas
+//        .where((l) => l.data['CodigoLinha'] == codigoLinha)
+//        .elementAt(0)
+//        .data;
+//    if (linha['favorita']) {
+//      linha['favorita'] = false;
+//      _linhasFavoritas.remove(codigoLinha);
+//    } else {
+//      linha['favorita'] = true;
+//      _linhasFavoritas.add(codigoLinha);
+//    }
+
+    print(_linhasFavoritas);
+    if (_linhasFavoritas.contains(codigoLinha)) {
+      _linhasFavoritas =
+          _linhasFavoritas.where((linha) => linha != codigoLinha).toList();
     } else {
-      linha['favorita'] = true;
       _linhasFavoritas.add(codigoLinha);
     }
+    _linhasFavoritasController.add(_linhasFavoritas);
 
-    _ordenarLinhas();
-
-    _linhasController.sink.add(_linhas);
+//    _ordenarLinhas();
 
     FirebaseUser _user = await FirebaseAuth.instance.currentUser();
     Firestore.instance
@@ -86,13 +99,12 @@ class LinhasBloc implements BlocBase {
         docLinha.data['favorita'] = false;
       });
       _linhasController.sink.add(_linhas);
-
-      _recuperarLinhasFavoritasDoUsuario();
     });
   }
 
   @override
   void dispose() {
     _linhasController.close();
+    _linhasFavoritasController.close();
   }
 }

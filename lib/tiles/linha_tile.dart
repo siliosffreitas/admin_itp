@@ -37,13 +37,21 @@ class LinhaTile extends StatelessWidget {
                           codigoLinha: _linha["CodigoLinha"],
                         )));
               }),
-          IconButton(
-              icon: Icon(_linha['favorita'] == true
-                  ? Icons.favorite
-                  : Icons.favorite_border),
-              onPressed: () {
-                _linhasBloc.toogleLinhaComoFavorita(_linha["CodigoLinha"]);
-              }),
+          StreamBuilder<List<String>>(
+            stream: _linhasBloc.outLinhasFavoritas,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Container();
+              }
+              return IconButton(
+                  icon: Icon(snapshot.data.contains(_linha["CodigoLinha"])
+                      ? Icons.favorite
+                      : Icons.favorite_border),
+                  onPressed: () {
+                    _linhasBloc.toogleLinhaComoFavorita(_linha["CodigoLinha"]);
+                  });
+            },
+          )
         ],
       ),
       onTap: () {

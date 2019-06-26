@@ -85,34 +85,6 @@ class _DetalhesParadaScreenState extends State<DetalhesParadaScreen> {
 
                     return _createListLinhas(
                         snapshot.data.documents[0]['Linhas']);
-
-//                    return ListView(
-//                      children: snapshot.data.documents[0]['Linhas']
-//                          .map<Widget>((linha) {
-//
-//                            print(linha);
-//                        return ListTile(
-//                          leading: CircleAvatar(
-//                            child: Icon(Icons.directions_bus),
-//                          ),
-//                          title: Text(linha["CodigoLinha"] ?? "-"),
-//                          subtitle: linha['Denomicao'] == null
-//                              ? null
-//                              : Text(linha['Denomicao']),
-//                          trailing: IconButton(
-//                              icon: Icon(Icons.access_alarms),
-//                              onPressed: () {
-//                                Navigator.of(context).push(MaterialPageRoute(
-//                                    builder: (context) => HorariosLinhaScreen(
-//                                          codigoLinha: linha["CodigoLinha"],
-//                                        )));
-//                              }),
-//                          onTap: () {
-//                            _rastreamentoBloc.adicionarLinha(linha);
-//                          },
-//                        );
-//                      }).toList(),
-//                    );
                   }
                 }),
           ],
@@ -167,30 +139,6 @@ class _DetalhesParadaScreenState extends State<DetalhesParadaScreen> {
   _createListLinhas(List linhas) {
 //    final _rastreamentoBloc = BlocProvider.of<RastreamentoBloc>(context);
     return Column(
-//      children: linhas.map((linha){
-//
-//        return ListTile(
-//          leading: CircleAvatar(
-//            child: Icon(Icons.directions_bus),
-//          ),
-//          title: Text(linha["CodigoLinha"] ?? "-"),
-//          subtitle: linha['Denomicao'] == null ? null : Text(linha['Denomicao']),
-//          trailing: IconButton(
-//              icon: Icon(Icons.access_alarms),
-//              onPressed: () {
-//                Navigator.of(context).push(MaterialPageRoute(
-//                    builder: (context) => HorariosLinhaScreen(
-//                      codigoLinha: linha["CodigoLinha"],
-//                    )));
-//              }),
-//          onTap: () {
-//            _rastreamentoBloc.adicionarLinha(linha);
-//          },
-//        );
-//
-//      }).toList(),
-      
-      
       children: linhas.map((linha) {
         return LinhaTile.fromMap(linha);
       }).toList(),
