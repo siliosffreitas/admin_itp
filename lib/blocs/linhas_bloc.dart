@@ -5,6 +5,7 @@ import 'package:rxdart/rxdart.dart';
 
 class LinhasBloc implements BlocBase {
   List<DocumentSnapshot> _linhas = [];
+  List<String> _linhasFavoritas = [];
 
   final _linhasController = BehaviorSubject<List<DocumentSnapshot>>();
 
@@ -26,23 +27,35 @@ class LinhasBloc implements BlocBase {
         userPrefs.data['linhas_favoritas'].forEach((linhaFavorita) {
           toogleLinhaComoFavorita(linhaFavorita);
         });
-
-
       });
     }
   }
 
-  toogleLinhaComoFavorita(String codigoLinha) {
+  toogleLinhaComoFavorita(String codigoLinha) async {
     Map<String, dynamic> linha = _linhas
         .where((l) => l.data['CodigoLinha'] == codigoLinha)
         .elementAt(0)
         .data;
     if (linha['favorita']) {
       linha['favorita'] = false;
+      _linhasFavoritas.remove(codigoLinha);
     } else {
       linha['favorita'] = true;
+      _linhasFavoritas.add(codigoLinha);
     }
 
+    _ordenarLinhas();
+
+    _linhasController.sink.add(_linhas);
+
+    FirebaseUser _user = await FirebaseAuth.instance.currentUser();
+    Firestore.instance
+        .collection('usuarios')
+        .document(_user.email)
+        .updateData({'linhas_favoritas': _linhasFavoritas});
+  }
+
+  void _ordenarLinhas() {
     _linhas.sort((a, b) {
       int compare = 0;
 
@@ -60,10 +73,6 @@ class LinhasBloc implements BlocBase {
         return compare;
       }
     });
-
-
-
-    _linhasController.sink.add(_linhas);
   }
 
   _addLinhasListener() {
