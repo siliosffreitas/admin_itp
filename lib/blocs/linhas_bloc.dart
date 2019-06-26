@@ -30,21 +30,12 @@ class LinhasBloc implements BlocBase {
         _linhas.sort((a, b) {
           int compare = 0;
 
-          if (a.data['favorita'] == null && b.data['favorita'] == null) {
+          if (a.data['favorita'] == b.data['favorita']) {
             compare = 0;
-          } else if (a.data['favorita'] == null && b.data['favorita'] != null) {
-            compare = 1;
-          } else if (a.data['favorita'] != null && b.data['favorita'] == null) {
-            compare = -1;
+          } else if (a.data['favorita']) {
+            return -1;
           } else {
-            if (a.data['favorita'] == b.data['favorita']) {
-              compare = 0;
-            }
-            if (a.data['favorita']) {
-              compare = 1;
-            } else {
-              compare = -1;
-            }
+            return 1;
           }
 
           if (compare == 0) {
@@ -64,11 +55,20 @@ class LinhasBloc implements BlocBase {
   }
 
   _toogleLinhaComoFavorita(String codigoLinha) {
+//    _linhas.forEach((docLine) {
+//      if (docLine.data['CodigoLinha'] == codigoLinha) {
+//        if (docLine.data['favorita']) {
+//          docLine.data['favorita'] = false;
+//        } else {
+//          docLine.data['favorita'] = true;
+//        }
+//      }
+//    });
     Map<String, dynamic> linha = _linhas
         .where((l) => l.data['CodigoLinha'] == codigoLinha)
         .elementAt(0)
         .data;
-    if (linha['favorita'] == true) {
+    if (linha['favorita']) {
       linha['favorita'] = false;
     } else {
       linha['favorita'] = true;
@@ -82,7 +82,9 @@ class LinhasBloc implements BlocBase {
         .snapshots()
         .listen((snapshot) {
       _linhas = snapshot.documents;
-//      print(_linhas.length);
+      _linhas.forEach((docLinha) {
+        docLinha.data['favorita'] = false;
+      });
       _linhasController.sink.add(_linhas);
 
       _recuperarLinhasFavoritasDoUsuario();
