@@ -16,22 +16,26 @@ class LinhasBloc implements BlocBase {
       _linhasFavoritasController.stream;
 
   LinhasBloc() {
-    print('linhas');
     _addLinhasListener();
     _recuperarLinhasFavoritasDoUsuario();
   }
 
   _recuperarLinhasFavoritasDoUsuario() async {
+    print("_recuperarLinhasFavoritasDoUsuario");
     FirebaseUser _user = await FirebaseAuth.instance.currentUser();
 
     if (_user != null) {
       Firestore.instance
           .collection("usuarios")
-          .document(_user.email)
-          .get()
-          .then((userPrefs) {
-        if (userPrefs.data != null) {
-          _linhasFavoritas = userPrefs.data['linhas_favoritas'].cast<String>();
+          .where("email_usuario", isEqualTo: _user.email)
+          .getDocuments()
+          .then((docs) {
+        if (docs.documents.isNotEmpty) {
+          _linhasFavoritas = docs.documents
+              .elementAt(0)
+              .data['linhas_favoritas']
+              .cast<String>();
+
           print('_linhasFavoritas : ${_linhasFavoritas}');
           _linhasFavoritasController.add(_linhasFavoritas);
         }
