@@ -24,46 +24,15 @@ class LinhasBloc implements BlocBase {
           .get()
           .then((userPrefs) {
         userPrefs.data['linhas_favoritas'].forEach((linhaFavorita) {
-          _toogleLinhaComoFavorita(linhaFavorita);
+          toogleLinhaComoFavorita(linhaFavorita);
         });
 
-        _linhas.sort((a, b) {
-          int compare = 0;
 
-          if (a.data['favorita'] == b.data['favorita']) {
-            compare = 0;
-          } else if (a.data['favorita']) {
-            return -1;
-          } else {
-            return 1;
-          }
-
-          if (compare == 0) {
-            return a.data['CodigoLinha'].compareTo(b.data['CodigoLinha']);
-          } else {
-            return compare;
-          }
-        });
-
-        _linhas.forEach((linha) {
-          print(linha.data);
-        });
-
-        _linhasController.sink.add(_linhas);
       });
     }
   }
 
-  _toogleLinhaComoFavorita(String codigoLinha) {
-//    _linhas.forEach((docLine) {
-//      if (docLine.data['CodigoLinha'] == codigoLinha) {
-//        if (docLine.data['favorita']) {
-//          docLine.data['favorita'] = false;
-//        } else {
-//          docLine.data['favorita'] = true;
-//        }
-//      }
-//    });
+  toogleLinhaComoFavorita(String codigoLinha) {
     Map<String, dynamic> linha = _linhas
         .where((l) => l.data['CodigoLinha'] == codigoLinha)
         .elementAt(0)
@@ -73,6 +42,28 @@ class LinhasBloc implements BlocBase {
     } else {
       linha['favorita'] = true;
     }
+
+    _linhas.sort((a, b) {
+      int compare = 0;
+
+      if (a.data['favorita'] == b.data['favorita']) {
+        compare = 0;
+      } else if (a.data['favorita']) {
+        return -1;
+      } else {
+        return 1;
+      }
+
+      if (compare == 0) {
+        return a.data['CodigoLinha'].compareTo(b.data['CodigoLinha']);
+      } else {
+        return compare;
+      }
+    });
+
+
+
+    _linhasController.sink.add(_linhas);
   }
 
   _addLinhasListener() {

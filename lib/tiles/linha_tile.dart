@@ -1,3 +1,4 @@
+import 'package:admin_itp/blocs/linhas_bloc.dart';
 import 'package:admin_itp/blocs/rastreamento_bloc.dart';
 import 'package:admin_itp/screens/horarios_linha_screen.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
@@ -18,6 +19,7 @@ class LinhaTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _rastreamentoBloc = BlocProvider.of<RastreamentoBloc>(context);
+    final _linhasBloc = BlocProvider.of<LinhasBloc>(context);
     return ListTile(
       leading: CircleAvatar(
         child: Icon(Icons.directions_bus),
@@ -39,7 +41,9 @@ class LinhaTile extends StatelessWidget {
               icon: Icon(_linha['favorita'] == true
                   ? Icons.favorite
                   : Icons.favorite_border),
-              onPressed: () {}),
+              onPressed: () {
+                _linhasBloc.toogleLinhaComoFavorita(_linha["CodigoLinha"]);
+              }),
         ],
       ),
       onTap: () {
