@@ -90,17 +90,23 @@ class _LinhasScreenState extends State<LinhasScreen> {
                   snapshotFavoritas.data.isEmpty) {
                 return Container();
               }
+
+              List linhasFavoritasEncontradas = documents
+                  .where((linha) =>
+                      snapshotFavoritas.data.contains(linha["CodigoLinha"]))
+                  .toList();
+
+              if (linhasFavoritasEncontradas.isEmpty) {
+                return Container();
+              }
+
               return Column(
                 children: <Widget>[
                   ListTile(
                     title: Text("Suas linhas favoritas"),
                   ),
                   Column(
-                    children: documents
-                        .where((linha) => snapshotFavoritas.data
-                            .contains(linha["CodigoLinha"]))
-                        .toList()
-                        .map((linha) {
+                    children: linhasFavoritasEncontradas.map((linha) {
                       return LinhaTile(linha);
                     }).toList(),
                   )
