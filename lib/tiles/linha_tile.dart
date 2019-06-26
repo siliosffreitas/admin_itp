@@ -41,7 +41,12 @@ class LinhaTile extends StatelessWidget {
             stream: _linhasBloc.outLinhasFavoritas,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return Container();
+                return IconButton(
+                    icon: Icon(Icons.favorite_border),
+                    onPressed: () {
+                      _linhasBloc
+                          .toogleLinhaComoFavorita(_linha["CodigoLinha"]);
+                    });
               }
               return IconButton(
                   icon: Icon(snapshot.data.contains(_linha["CodigoLinha"])

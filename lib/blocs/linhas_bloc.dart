@@ -30,26 +30,16 @@ class LinhasBloc implements BlocBase {
           .document(_user.email)
           .get()
           .then((userPrefs) {
-        _linhasFavoritas = userPrefs.data['linhas_favoritas'].cast<String>();
-        print('_linhasFavoritas : ${_linhasFavoritas}');
-        _linhasFavoritasController.add(_linhasFavoritas);
+        if (userPrefs.data != null) {
+          _linhasFavoritas = userPrefs.data['linhas_favoritas'].cast<String>();
+          print('_linhasFavoritas : ${_linhasFavoritas}');
+          _linhasFavoritasController.add(_linhasFavoritas);
+        }
       });
     }
   }
 
-  toogleLinhaComoFavorita(String codigoLinha) async {
-//    Map<String, dynamic> linha = _linhas
-//        .where((l) => l.data['CodigoLinha'] == codigoLinha)
-//        .elementAt(0)
-//        .data;
-//    if (linha['favorita']) {
-//      linha['favorita'] = false;
-//      _linhasFavoritas.remove(codigoLinha);
-//    } else {
-//      linha['favorita'] = true;
-//      _linhasFavoritas.add(codigoLinha);
-//    }
-
+  toogleLinhaComoFavorita(String codigoLinha) {
     print(_linhasFavoritas);
     if (_linhasFavoritas.contains(codigoLinha)) {
       _linhasFavoritas =
@@ -59,31 +49,31 @@ class LinhasBloc implements BlocBase {
     }
     _linhasFavoritasController.add(_linhasFavoritas);
 
-//    _ordenarLinhas();
-
-    FirebaseUser _user = await FirebaseAuth.instance.currentUser();
-    Firestore.instance
-        .collection('usuarios')
-        .document(_user.email)
-        .updateData({'linhas_favoritas': _linhasFavoritas});
+    _salvarFavoritoNoFirebase();
   }
 
-  void _ordenarLinhas() {
-    _linhas.sort((a, b) {
-      int compare = 0;
+  void _salvarFavoritoNoFirebase() async {
+    FirebaseUser _user = await FirebaseAuth.instance.currentUser();
 
-      if (a.data['favorita'] == b.data['favorita']) {
-        compare = 0;
-      } else if (a.data['favorita']) {
-        return -1;
+    Firestore.instance
+        .collection("usuarios")
+        .where("email_usuario", isEqualTo: _user.email)
+        .getDocuments()
+        .then((docs) {
+      if (docs.documents.isEmpty) {
+        Firestore.instance.collection("usuarios").add({
+          'email_usuario': _user.email,
+          'linhas_favoritas': _linhasFavoritas
+        }).then((doc) {
+          print("salvou linhas favoritas");
+        });
       } else {
-        return 1;
-      }
-
-      if (compare == 0) {
-        return a.data['CodigoLinha'].compareTo(b.data['CodigoLinha']);
-      } else {
-        return compare;
+        Firestore.instance
+            .collection('usuarios')
+            .document(docs.documents.elementAt(0).documentID)
+            .updateData({'linhas_favoritas': _linhasFavoritas}).then((doc) {
+          print("atualizou linhas favoritas");
+        });
       }
     });
   }
