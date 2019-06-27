@@ -28,10 +28,10 @@ class LinhasBloc implements BlocBase {
       Firestore.instance
           .collection("usuarios")
           .where("email_usuario", isEqualTo: _user.email)
-          .getDocuments()
-          .then((docs) {
-        if (docs.documents.isNotEmpty) {
-          _linhasFavoritas = docs.documents
+          .snapshots()
+          .listen((snapshot) {
+        if (snapshot.documents.isNotEmpty) {
+          _linhasFavoritas = snapshot.documents
               .elementAt(0)
               .data['linhas_favoritas']
               .cast<String>();
@@ -44,7 +44,6 @@ class LinhasBloc implements BlocBase {
   }
 
   toogleLinhaComoFavorita(String codigoLinha) {
-    print(_linhasFavoritas);
     if (_linhasFavoritas.contains(codigoLinha)) {
       _linhasFavoritas =
           _linhasFavoritas.where((linha) => linha != codigoLinha).toList();
@@ -52,7 +51,7 @@ class LinhasBloc implements BlocBase {
       _linhasFavoritas.add(codigoLinha);
     }
     _linhasFavoritasController.add(_linhasFavoritas);
-
+    print(_linhasFavoritas);
     _salvarFavoritoNoFirebase();
   }
 
