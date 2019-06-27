@@ -31,10 +31,13 @@ class LinhasBloc implements BlocBase {
           .snapshots()
           .listen((snapshot) {
         if (snapshot.documents.isNotEmpty) {
-          _linhasFavoritas = snapshot.documents
+          _linhasFavoritas = [];
+          snapshot.documents
               .elementAt(0)
               .data['linhas_favoritas']
-              .cast<String>();
+              .forEach((fav) {
+            _linhasFavoritas.add(fav);
+          });
 
           print('_linhasFavoritas : ${_linhasFavoritas}');
           _linhasFavoritasController.add(_linhasFavoritas);
