@@ -107,6 +107,7 @@ class _DetalhesParadaScreenState extends State<DetalhesParadaScreen> {
           height: 250,
           child: GoogleMap(
             onMapCreated: _onMapCreated,
+            myLocationButtonEnabled: false,
             markers: _createMarker(_latLng),
             initialCameraPosition: CameraPosition(
               target: _latLng,

@@ -171,6 +171,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 //              compassEnabled: false,
                             myLocationButtonEnabled: false,
+                            myLocationEnabled: true,
                             onMapCreated: _onMapCreated,
 //            onMapCreated: (GoogleMapController controller) {
 //              _controller.complete(controller);
