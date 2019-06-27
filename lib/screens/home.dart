@@ -52,13 +52,9 @@ class _MyHomePageState extends State<MyHomePage> {
     // TODO: implement initState
     super.initState();
 
-    Firestore.instance.settings(timestampsInSnapshotsEnabled: true);
+    Firestore.instance.settings(
+        timestampsInSnapshotsEnabled: true, persistenceEnabled: true);
 
-//    FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-//    FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-//        .setTimestampsInSnapshotsEnabled(true)
-//       .build();
-//    firestore.setFirestoreSettings(settings);
 
     initPlatformState();
   }
@@ -183,7 +179,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             initialCameraPosition: _initialCamera,
                             markers: _desenharMarcadores(snapshotParadas.data,
                                 linhasRastreadas:
-                                    linhasRastreadasSnapshot.data),
+                                linhasRastreadasSnapshot.data),
 //            markers: _createMarker(_latLng),
 //              initialCameraPosition: CameraPosition(
 //                target: LatLng(-5.082618, -42.790596),
@@ -193,7 +189,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         }),
                   ),
                   StreamBuilder<Map>(
-                    stream: BlocProvider.of<UtilsBloc>(context).outConfigs,
+                    stream: BlocProvider
+                        .of<UtilsBloc>(context)
+                        .outConfigs,
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
                         return Container();
@@ -201,7 +199,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       veiculosAcessiveis = snapshot.data['veiculos_acessiveis'];
                       veiculosComWifi = snapshot.data['veiculos_com_wifi'];
                       veiculosComAr =
-                          snapshot.data['veiculos_com_ar_condicionado'];
+                      snapshot.data['veiculos_com_ar_condicionado'];
 
                       if (snapshot.data.isEmpty ||
                           snapshot.data['statusstrans'] == true) {
@@ -240,7 +238,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             height: 50,
                             child: ListView(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 12),
+                              const EdgeInsets.symmetric(horizontal: 12),
                               scrollDirection: Axis.horizontal,
                               children: snapshot.data.map<Widget>((linha) {
                                 return LinhaRastreadaTile(linha: linha);
@@ -296,7 +294,7 @@ class _MyHomePageState extends State<MyHomePage> {
 //          ),
 //        )
 // This trailing comma makes auto-formatting nicer for build methods.
-        );
+    );
   }
 
   Set<Polyline> _extrairItinerariosParaPolylines(
@@ -320,7 +318,9 @@ class _MyHomePageState extends State<MyHomePage> {
           });
 
           polylines.add(Polyline(
-              width: Theme.of(context).platform == TargetPlatform.iOS ? 3 : 7,
+              width: Theme
+                  .of(context)
+                  .platform == TargetPlatform.iOS ? 3 : 7,
               polylineId: PolylineId(linha['CodigoLinha']),
               color: determinarCorLinhaRastreada(linha['cor']),
               points: coords));
@@ -439,14 +439,17 @@ class _MyHomePageState extends State<MyHomePage> {
                   snippet: '${parada.data['Endereco']}',
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => DetalhesParadaScreen(
+                        builder: (context) =>
+                            DetalhesParadaScreen(
                               codigoParada: parada.data['CodigoParada'],
                             )));
                   }),
-              icon: Theme.of(context).platform == TargetPlatform.iOS
+              icon: Theme
+                  .of(context)
+                  .platform == TargetPlatform.iOS
                   ? BitmapDescriptor.fromAsset("assets/ios/stopbus_green.png")
                   : BitmapDescriptor.fromAsset(
-                      "assets/android/stopbus_green.png"),
+                  "assets/android/stopbus_green.png"),
             ));
           }
         }
@@ -478,11 +481,13 @@ class _MyHomePageState extends State<MyHomePage> {
 //                          codigoParada: parada.data['UltimaAtualizacao'],
 //                        )));
                   }),
-              icon: Theme.of(context).platform == TargetPlatform.iOS
+              icon: Theme
+                  .of(context)
+                  .platform == TargetPlatform.iOS
                   ? BitmapDescriptor.fromAsset(
-                      "assets/ios/bus_mark_line_${linha['cor'] + 1}.png")
+                  "assets/ios/bus_mark_line_${linha['cor'] + 1}.png")
                   : BitmapDescriptor.fromAsset(
-                      "assets/android/bus_mark_line_${linha['cor'] + 1}.png"),
+                  "assets/android/bus_mark_line_${linha['cor'] + 1}.png"),
             ));
 
             if (veiculo.data['LastLat'] != null &&
@@ -502,18 +507,20 @@ class _MyHomePageState extends State<MyHomePage> {
                 infoWindow: InfoWindow(
                     title: _titleInfowindowOnibus(veiculo.data),
                     snippet:
-                        'Atualizado em ${veiculo.data['UltimaAtualizacao']}',
+                    'Atualizado em ${veiculo.data['UltimaAtualizacao']}',
                     onTap: () {
 //                    Navigator.of(context).push(MaterialPageRoute(
 //                        builder: (context) => DetalhesParadaScreen(
 //                          codigoParada: parada.data['UltimaAtualizacao'],
 //                        )));
                     }),
-                icon: Theme.of(context).platform == TargetPlatform.iOS
+                icon: Theme
+                    .of(context)
+                    .platform == TargetPlatform.iOS
                     ? BitmapDescriptor.fromAsset(
-                        "assets/ios/arrow_line_${linha['cor'] + 1}.png")
+                    "assets/ios/arrow_line_${linha['cor'] + 1}.png")
                     : BitmapDescriptor.fromAsset(
-                        "assets/android/arrow_line_${linha['cor'] + 1}.png"),
+                    "assets/android/arrow_line_${linha['cor'] + 1}.png"),
               ));
             }
           });

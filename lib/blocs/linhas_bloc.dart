@@ -89,9 +89,6 @@ class LinhasBloc implements BlocBase {
         .snapshots()
         .listen((snapshot) {
       _linhas = snapshot.documents;
-      _linhas.forEach((docLinha) {
-        docLinha.data['favorita'] = false;
-      });
       _linhasController.sink.add(_linhas);
     });
   }

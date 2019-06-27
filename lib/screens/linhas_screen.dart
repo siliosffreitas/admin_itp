@@ -79,80 +79,42 @@ class _LinhasScreenState extends State<LinhasScreen> {
     );
   }
 
-  _createListLinhas(Iterable<DocumentSnapshot> documents) {
-    return SingleChildScrollView(
-      child: Column(
-        children: <Widget>[
-          StreamBuilder<List<String>>(
-            stream: _linhasBloc.outLinhasFavoritas,
-            builder: (context, snapshotFavoritas) {
-              if (!snapshotFavoritas.hasData ||
-                  snapshotFavoritas.data.isEmpty) {
-                return Container();
-              }
-
-              List linhasFavoritasEncontradas = documents
-                  .where((linha) =>
-                      snapshotFavoritas.data.contains(linha["CodigoLinha"]))
-                  .toList();
-
-              if (linhasFavoritasEncontradas.isEmpty) {
-                return Container();
-              }
-
-              return Column(
-                children: <Widget>[
-                  ListTile(
-                    title: Text("Suas linhas favoritas"),
-                  ),
-                  Column(
-                    children: linhasFavoritasEncontradas.map((linha) {
-                      return LinhaTile(linha);
-                    }).toList(),
-                  )
-                ],
-              );
-            },
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+  _createListLinhas(Iterable<DocumentSnapshot> linhasEncontradas) {
+    return StreamBuilder<List<String>>(
+      stream: _linhasBloc.outLinhasFavoritas,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData || snapshot.data.isEmpty) {
+          return ListView(
             children: <Widget>[
               ListTile(
                 title: Text("Linhas de Teresina"),
               ),
-            ]..add(Column(
-                children: documents.map((linha) {
-                  return LinhaTile(linha);
-                }).toList(),
-              )),
-          )
-        ],
-      ),
+            ]..addAll(linhasEncontradas.map((linha) {
+                return LinhaTile(linha);
+              }).toList()),
+          );
+        }
+
+        List linhasFavoritasEncontradas = linhasEncontradas
+            .where((linha) => snapshot.data.contains(linha["CodigoLinha"]))
+            .toList();
+
+        return ListView(
+            children: <Widget>[
+          ListTile(
+            title: Text("Suas linhas favoritas"),
+          ),
+        ]
+              ..addAll(linhasFavoritasEncontradas.map((linha) {
+                return LinhaTile(linha);
+              }).toList())
+              ..add(ListTile(
+                title: Text("Linhas de Teresina"),
+              ))
+              ..addAll(linhasEncontradas.map((linha) {
+                return LinhaTile(linha);
+              }).toList()));
+      },
     );
-
-//    return SingleChildScrollView(
-//      child: Column(
-//        children: <Widget>[
-//          StreamBuilder<List<String>>(
-//            stream: _linhasBloc.outLinhasFavoritas,
-//
-//          )
-//        ],
-//      ),
-//    );
-
-//    return ListView(
-//      children: Stre,
-//    );
-//    return ListView.separated(
-//      itemCount: documents.length,
-//      itemBuilder: (content, index) {
-//        return LinhaTile(documents.elementAt(index));
-//      },
-//      separatorBuilder: (context, index) => Divider(
-//            indent: 16,
-//            height: 1,
-//          ),
-//    );
   }
 }
